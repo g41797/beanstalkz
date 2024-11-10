@@ -1,0 +1,12 @@
+[submodule "src/submodules/beanstalkd"]
+	path = src/submodules/beanstalkd
+	url = https://github.com/beanstalkd/beanstalkd
+[submodule "src/submodules/beanstalk-client"]
+	path = src/submodules/beanstalk-client
+	url = https://github.com/deepfryed/beanstalk-client
+[submodule "src/submodules/evbsc"]
+	path = src/submodules/evbsc
+	url = https://github.com/bergundy/evbsc
+[submodule "src/submodules/libbeanstalkclient"]
+	path = src/submodules/libbeanstalkclient
+	url = https://github.com/bergundy/libbeanstalkclient

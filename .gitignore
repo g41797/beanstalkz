@@ -1,0 +1,8 @@
+.zig-cache/
+zig-out/
+.idea/
+#/src/c
+#/src/c/libubox
+#/src/c/ubus
+#/src/c/include
+html/

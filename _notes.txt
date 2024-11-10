@@ -1,0 +1,117 @@
+beanstalkd
+    https://beanstalkd.github.io/
+    https://github.com/beanstalkd/beanstalkd
+
+Client Libraries
+    https://github.com/beanstalkd/beanstalkd/wiki/Client-Libraries
+    https://github.com/getjackd/go-jackd Go latest???
+    https://github.com/iFaceless/beanstalkc-rust?tab=readme-ov-file
+    https://github.com/earl/beanstalkc PY
+    https://github.com/bergundy/evbsc
+    https://github.com/bergundy/libbeanstalkclient
+    https://github.com/deepfryed/beanstalk-client +++
+    https://github.com/pheanstalk/pheanstalk PHP
+    https://github.com/pheanstalk/pheanstalk/blob/v5/doc/library-design.md design
+
+
+Protocol
+    https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt
+    https://github.com/iFaceless/beanstalkc-rust/blob/master/protocol.md
+
+Beanstalkd vs Gearman: What are the differences?
+
+    ## Key Differences Between Beanstalkd and Gearman
+
+    1. **Functionality**: Beanstalkd is a simple, fast work queue whereas Gearman is a distributed job queuing system. Beanstalkd focuses on providing a straightforward queuing mechanism, while Gearman allows for more complex distributed job processing scenarios.
+    2. **Protocol Support**: Beanstalkd uses its own binary TCP protocol, making it lightweight and fast, while Gearman supports multiple protocols like TCP, UDP, and SSL. This difference affects the compatibility and flexibility of the two systems in various network environments.
+    3. **Job Dependencies**: Beanstalkd does not provide native support for job dependencies, meaning jobs cannot be set to run based on the completion of other jobs. On the other hand, Gearman allows for job dependencies, enabling more intricate job workflows and processing logic.
+    4. **Ease of Use**: Beanstalkd is known for its simplicity and ease of use with a minimalistic feature set, making it ideal for straightforward queuing tasks. Gearman, being more feature-rich and complex, may require more time and effort to set up and configure for advanced job processing needs.
+    5. **Community Support**: Gearman, being around longer and having a larger user base, has more extensive community support, documentation, and plugins available compared to Beanstalkd. This can be a significant factor to consider when choosing between the two systems.
+    6. **Scalability**: While both Beanstalkd and Gearman support horizontal scalability by adding more servers, Gearman's distributed nature allows for easier scaling across multiple machines and clusters. This scalability aspect can be crucial for applications with high processing demands.
+
+    In Summary, Beanstalkd and Gearman offer distinct functionalities and features, such as simplicity vs. complexity, protocol support, job dependencies, ease of use, community support, and scalability.
+
+
+Alternatives
+     Gearman
+     Celery
+     NSQ - Go
+     Disque - => redis ?
+     Chronicle Queue  - Java
+
+     https://taskqueues.com/
+
+
+
+Packed struct too big / uninitialized
+    https://ziggit.dev/t/packed-struct-too-big-uninitialized/6752
+
+Zig Playground
+    https://playground.zigtools.org/
+
+Submodules
+    https://github.com/beanstalkd/beanstalkd
+    https://github.com/deepfryed/beanstalk-client
+    https://github.com/bergundy/evbsc
+    https://github.com/bergundy/libbeanstalkclient
+
+    git submodule add https://github.com/beanstalkd/beanstalkd src/submodules/beanstalkd
+    git submodule add https://github.com/deepfryed/beanstalk-client src/submodules/beanstalk-client
+    git submodule add https://github.com/bergundy/evbsc src/submodules/evbsc
+    git submodule add https://github.com/bergundy/libbeanstalkclient src/submodules/libbeanstalkclient
+
+    git rm src/submodules/TBD
+
+Zig & JSON
+    https://www.openmymind.net/Reading-A-Json-Config-In-Zig/
+    https://www.reddit.com/r/Zig/comments/1e1pqrg/is_it_possible_to_parse_a_json_object_to_a_map/
+    https://www.reddit.com/r/Zig/comments/1bignpf/json_serialization_and_taggeddiscrimated_unions/
+    https://zigbin.io/651078
+    https://www.openmymind.net/Zigs-std-json-Parsed/
+
+Translate-C
+    https://zig.guide/master/working-with-c/translate-c
+    https://fig.io/manual/zig/translate-c
+
+
+Reading/writing strings from binary data
+    https://ziggit.dev/t/reading-writing-strings-from-binary-data/1159/6?u=g41797
+
+Difference between struct level align(x) and field level align(x)
+    https://ziggit.dev/t/difference-between-struct-level-align-x-and-field-level-align-x/3082/1
+
+
+Packed structs in Zig make bit/flag sets trivial
+    https://devlog.hexops.com/2022/packed-structs-in-zig/
+
+Pointer arithmetic
+    https://github.com/andrewCodeDev/random_access
+
+A Programmer-Friendly I/O Abstraction Over io_uring and kqueue
+    https://tigerbeetle.com/blog/a-friendly-abstraction-over-iouring-and-kqueue
+
+Cross-platform event loop
+    https://github.com/mitchellh/libxev
+
+What is io_uring?
+    https://unixism.net/loti/what_is_io_uring.html
+    https://github.com/saltzm/async_io_uring
+    https://github.com/Cloudef/zig-aio
+    https://developers.redhat.com/articles/2023/04/12/why-you-should-use-iouring-network-io
+
+
+TCP Server in Zig - Part 1 - Single Threaded
+    https://www.openmymind.net/TCP-Server-In-Zig-Part-1-Single-Threaded/
+
+
+Length of zero terminated string
+    const c_string: [*:0]const u8 = "hello";
+    const length = std.mem.len(c_string);
+    std.debug.print("length {d} sentinel {d} \n", .{length, c_string[length]});
+
+    Output: length 5 sentinel 0
+
+Generate docs
+    cd ./dgen
+    /home/g41797/Devs/doxygen-1.12.0/bin/doxygen
+
