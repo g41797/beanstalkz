@@ -2,6 +2,34 @@ beanstalkd
     https://beanstalkd.github.io/
     https://github.com/beanstalkd/beanstalkd
 
+Protocol
+    https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt
+    https://github.com/iFaceless/beanstalkc-rust/blob/master/protocol.md
+
+Tick Tock on Beanstalkd Message Queues
+    https://www.todaysoftmag.com/article/791/tick-tock-on-beanstalkd-message-queues
+
+Simple and easy task queue - beanstalkd.
+    https://www.cnblogs.com/immaxfang/p/16503956.html - flow chart!!!
+
+beanstalk - based on article above ++++
+    https://geraldo.dev/til/beanstalk.html +++++ !!!!!! the same flow chart
+
+Scalable Work Queues with Beanstalk
+    https://www.igvita.com/2010/05/20/scalable-work-queues-with-beanstalk/
+
+
+Client design (PHP)
+    https://github.com/pheanstalk/pheanstalk/blob/v5/doc/library-design.md
+
+        Manager     - gather information about the server and its jobs
+        Publisher   - publishing jobs
+        Subscriber  - listening to tubes and reserving / managing the jobs in them
+
+        Commands
+            https://github.com/pheanstalk/pheanstalk/blob/v5/doc/library-design.md#commands
+
+
 Client Libraries
     https://github.com/beanstalkd/beanstalkd/wiki/Client-Libraries
 
@@ -16,12 +44,7 @@ Client Libraries
     https://github.com/bergundy/libbeanstalkclient
     https://github.com/deepfryed/beanstalk-client +++
     https://github.com/pheanstalk/pheanstalk PHP
-    https://github.com/pheanstalk/pheanstalk/blob/v5/doc/library-design.md design
 
-
-Protocol
-    https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt
-    https://github.com/iFaceless/beanstalkc-rust/blob/master/protocol.md
 
 Beanstalkd vs Gearman: What are the differences?
 
@@ -188,3 +211,19 @@ Parser Combinators
 
 A Http server written in Zig
     https://github.com/frmdstryr/zhp
+
+
+Go generic queue - beanstalkd, nats, etc
+    https://github.com/zeromicro/go-queue
+
+Delayed queue
+    https://medium.com/codex/delayed-queue-a-message-queue-with-delay-feature-268c8647c2fd
+
+Docker-compose
+    https://github.com/pheanstalk/pheanstalk/blob/v5/docker-compose.yml
+
+Docker integration
+    https://github.com/g41797/queue-beanstalkd/tree/master/docker
+
+CI
+    https://github.com/g41797/queue-beanstalkd/blob/master/.github/workflows/tests.yml
