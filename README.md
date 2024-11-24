@@ -1,6 +1,11 @@
 ![](_logo/beanstalkd-status.png)
 
 
+# beanstalkz
+WIP
+
+
+
 ```txt
 
                     Typical job lifecycle
@@ -33,8 +38,6 @@
 
 ```
 
-# beanstalkz
-WIP
 
 <br />
 <center>
