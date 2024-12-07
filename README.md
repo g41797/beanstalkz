@@ -40,10 +40,3 @@ WIP
 
 
 <br />
-<center>
-
-*Powered by*  [![clion](_logo/CLion_icon.png)][refclion]
-
-[refclion]: https://www.jetbrains.com/clion/
-
-</center>
