@@ -2,9 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 const std = @import("std");
-const testing = @import("testing");
+const testing = std.testing;
+const name = @import("name.zig");
 
-test "dumb test" {
-    _ = 5;
+test "names" {
+    try testing.expectError(error.Empty, name.checkName(""));
+    try testing.expectError(error.TooLong, name.checkName(&[_]u8{'a'} ** 201));
+    try testing.expectError(error.Hyphen, name.checkName(&[_]u8{'-'} ** 16));
+    try testing.expectError(error.BadChar, name.checkName("\t"));
 }
- 
