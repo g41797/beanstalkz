@@ -33,7 +33,6 @@ const ReturnedErrorMap = std.StaticStringMap(ReturnedError).initComptime(.{
     .{ "UNKNOWN_COMMAND", ReturnedError.Unknown },
 });
 
-
 pub fn findError(text: []u8) ReturnedError {
     if (ReturnedErrorMap.get(text)) |reterr| {
         return reterr;

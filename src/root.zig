@@ -1,4 +1,6 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
-const _ = @import("name.zig");
+const name = @import("name.zig");
+const parse = @import("parse.zig");
+const err = @import("err.zig");
