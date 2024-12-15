@@ -1,13 +1,13 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
+const std = @import("std");
 const testing = std.testing;
 
 const err = @import("err.zig");
 const ReturnedError = err.ReturnedError;
 const parse = @import("parse.zig");
 
-const std = @import("std");
 test "parse errors" {
     try testing.expectError(ReturnedError.Unknown, parse.parseSize(""));
     try testing.expectError(ReturnedError.Unknown, parse.parseSize("TEXT"));

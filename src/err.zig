@@ -16,6 +16,7 @@ pub const ReturnedError = error{
     OOM,
     Timeout,
     Unknown,
+    CommunicationFailure,
 };
 
 const ReturnedErrorMap = std.StaticStringMap(ReturnedError).initComptime(.{
@@ -31,6 +32,7 @@ const ReturnedErrorMap = std.StaticStringMap(ReturnedError).initComptime(.{
     .{ "OUT_OF_MEMORY", ReturnedError.OOM },
     .{ "TIMED_OUT", ReturnedError.Timeout },
     .{ "UNKNOWN_COMMAND", ReturnedError.Unknown },
+    .{ "CommunicationFailure", ReturnedError.CommunicationFailure },
 });
 
 pub fn findError(text: []u8) ReturnedError {
