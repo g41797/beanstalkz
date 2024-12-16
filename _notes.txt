@@ -1,3 +1,9 @@
+Pneumatic tube
+    https://en.wikipedia.org/wiki/Pneumatic_tube
+
+Pneumatic Networks
+    http://douglas-self.com/MUSEUM/COMMS/pneumess/pneumess.htm 
+
 beanstalkd
     https://beanstalkd.github.io/
     https://github.com/beanstalkd/beanstalkd
@@ -283,3 +289,6 @@ Comparing Beanstalkd, IronMQ and Amazon SQS
 basic-tcp-chat.zig
     using net.StreamServer
     https://gist.github.com/andrewrk/34c21bdc1600b0884a3ab9fa9aa485b8
+    
+Build System Tricks
+    https://ziggit.dev/t/build-system-tricks/3531

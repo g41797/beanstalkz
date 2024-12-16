@@ -1,6 +1,18 @@
 // Copyright (c) 2024 g41797
 // SPDX-License-Identifier: MIT
 
+//! [Beanstalk](https://beanstalkd.github.io/) _is a simple, fast work queue._ 
+//! - [repository](https://github.com/beanstalkd/beanstalkd)
+//! - [protocol](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt)
+//! 
+//! Zig beanstalk client supports **subset** of commands:
+//! - _use_: set current tube(queue)
+//! - _put_: submit job 
+//! - _reserve-with-timeout_: consume job
+//! - _delete_: remove job from the system
+//! - _watch_: subscribe to jobs submitted to the tube
+//! - _ignore_: un-subscribe
+
 const std = @import("std");
 const Mutex = std.Thread.Mutex;
 const Allocator = std.mem.Allocator;
