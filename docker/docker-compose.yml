@@ -1,0 +1,7 @@
+version: "3.5"
+
+services:
+  beanstalk:
+    image: ${IMAGE}
+    ports:
+      - ${QPORT}:${QPORT}
