@@ -51,6 +51,8 @@ Client Libraries
     https://github.com/bergundy/libbeanstalkclient
     https://github.com/deepfryed/beanstalk-client +++
     https://github.com/pheanstalk/pheanstalk PHP
+    https://github.com/pheanstalk/pheanstalk/tree/v5 PHP
+
 
 
 Beanstalkd vs Gearman: What are the differences?

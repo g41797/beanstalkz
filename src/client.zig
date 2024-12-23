@@ -15,6 +15,9 @@
 //! - _delete_: remove job from the system
 
 const std = @import("std");
+const net = std.net;
+const http = std.http;
+const Connection = http.Client.Connection;
 const Mutex = std.Thread.Mutex;
 const Allocator = std.mem.Allocator;
 
@@ -25,6 +28,9 @@ const parse = @import("parse.zig");
 pub const DefaultAddr = "127.0.0.1";
 pub const DafaultPort = 11300;
 pub const DafaultTube = "default";
+pub const DefaultDelay = 0; // no delay
+pub const DefaultPriority = 1024; // most urgent: 0, least urgent: 4294967295
+pub const DefaultTTR = 60; // 1 minute
 
 pub const JobState = enum {
     DELAYED,
@@ -36,7 +42,8 @@ pub const JobState = enum {
 pub const Client = struct {
     ready: bool = false,
     mutex: Mutex = .{},
-    allocator: ?Allocator = null,
+    allocator: Allocator = undefined,
+    connection: ?Connection = null,
 
     /// Returns connected to beanstalkd client.
     /// Arguments:
@@ -47,7 +54,7 @@ pub const Client = struct {
     /// Returns errors for:
     ///     - failed connection
     ///     - already existing connection
-    pub fn connect(allocator: ?Allocator, addr: ?[]const u8, port: ?u16) !*Client {
+    pub fn connect(allocator: Allocator, addr: ?[]const u8, port: ?u16) !*Client {
         _ = allocator;
         _ = addr;
         _ = port;
@@ -162,5 +169,61 @@ pub const Client = struct {
     pub fn ignore(cl: *Client, tname: []const u8) ReturnedError!void {
         _ = cl;
         _ = tname;
+    }
+
+    // Writes the formatted output followed by \r\n to underlying stream.
+    fn print_line(cl: *Client, comptime fmt: []const u8, args: anytype) !void {
+        _ = cl;
+        _ = fmt;
+        _ = args;
+    }
+
+    // Writes the buffer followed by \r\n to underlying stream.
+    fn print_buffer(cl: *Client, buffer: []const u8) !void {
+        _ = cl;
+        _ = buffer;
+    }
+
+    // Flushes underlying stream.
+    fn flush(cl: *Client) !void {
+        _ = cl;
+    }
+
+    // Reads underlying stream till \r\n to the buffer.
+    // If buffer is small - returns error.
+    // Returns length of the line without \r\n.
+    // 0 - for \r\n only.
+    fn read_line(cl: *Client, buffer: []u8) !usize {
+        _ = cl;
+        _ = buffer;
+    }
+
+    // Reads 'len' bytes from underlying stream to the buffer.
+    // Also reads trailer (\r\n) but not saved it to the buffer.
+    // If buffer is small - returns error.
+    // If \r\n were not in the stream - returns error.
+    fn read_buffer(cl: *Client, buffer: []u8, len: usize) !void {
+        _ = cl;
+        _ = buffer;
+        _ = len;
+    }
+
+    fn connectTcp(client: *Client, host: []const u8, port: u16) !*Connection {
+        const conn = try client.allocator.create(Connection);
+        errdefer client.allocator.destroy(conn);
+
+        const stream = try net.tcpConnectToHost(client.allocator, host, port);
+        errdefer stream.close();
+
+        conn = .{
+            .stream = stream,
+            .tls_client = undefined,
+            .protocol = Connection.Protocol.plain,
+            .host = try client.allocator.dupe(u8, host),
+            .port = port,
+        };
+        errdefer client.allocator.free(conn.data.host);
+
+        return conn;
     }
 };
