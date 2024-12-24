@@ -15,3 +15,11 @@ test "connect-disconnect" {
     try cl.connect(std.testing.allocator, null, null);
     cl.disconnect();
 }
+
+test "put" {
+    var cl: Client = .{};
+    try cl.connect(std.testing.allocator, null, null);
+    defer cl.disconnect();
+
+    _ = try cl.put(1, 2, 3, "");
+}

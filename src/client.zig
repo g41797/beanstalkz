@@ -32,6 +32,8 @@ pub const DefaultDelay = 0; // no delay
 pub const DefaultPriority = 1024; // most urgent: 0, least urgent: 4294967295
 pub const DefaultTTR = 60; // 1 minute
 
+pub const MaxReadLineLen = 256;
+
 pub const JobState = enum {
     DELAYED,
     READY,
@@ -43,6 +45,7 @@ pub const Client = struct {
     mutex: Mutex = .{},
     allocator: Allocator = undefined,
     connection: ?*Connection = null,
+    readLine: [MaxReadLineLen]u8 = undefined,
 
     /// Returns connected to beanstalkd client.
     /// Arguments:
@@ -105,14 +108,14 @@ pub const Client = struct {
     ///     - not connected
     ///     - failed communication
     ///     - wrong tube name
-    pub fn use(cl: *Client, tname: []const u8) ReturnedError!void {
+    pub fn use(cl: *Client, tname: []const u8) !void {
         _ = cl;
         _ = tname;
     }
 
     /// Returns true if tname is the same as tube name set by 'use'
     /// If was not set - returns true if tname is "default"
-    pub fn is_current(cl: *Client, tname: []const u8) ReturnedError!bool {
+    pub fn is_current(cl: *Client, tname: []const u8) !bool {
         _ = cl;
         _ = tname;
 
@@ -144,12 +147,25 @@ pub const Client = struct {
     ///      - if the server ran out of memory (returned <BURIED id>) - client automatically
     ///      delete buried job
     ///
-    pub fn put(cl: *Client, pri: u32, delay: u32, ttr: u32, job: []const u8) ReturnedError!u32 {
-        _ = cl;
-        _ = pri;
-        _ = delay;
-        _ = ttr;
-        _ = job;
+    pub fn put(cl: *Client, pri: u32, delay: u32, ttr: u32, job: []const u8) !u32 {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        // put <pri> <delay> <ttr> <bytes>\r\n
+        try cl.print_line("put {0d} {1d} {2d} {3d}", .{
+            pri,
+            delay,
+            ttr,
+            job.len,
+        });
+
+        // <data>\r\n
+        try cl.print_buffer(job);
+        try cl.flush();
+        
+        _ = try cl.read_line(cl.readLine[0..]);
+        
+        return 0;
     }
 
     /// Returns state of the job.
@@ -157,7 +173,7 @@ pub const Client = struct {
     /// Arguments:
     ///     id: job id
     /// If job does not exists - returns NotFound.
-    pub fn state(cl: *Client, id: u32) ReturnedError!JobState {
+    pub fn state(cl: *Client, id: u32) !JobState {
         _ = cl;
         _ = id;
     }
@@ -169,14 +185,14 @@ pub const Client = struct {
     /// Arguments:
     ///     tname: tube name
     ///
-    pub fn watch(cl: *Client, tname: []const u8) ReturnedError!void {
+    pub fn watch(cl: *Client, tname: []const u8) !void {
         _ = cl;
         _ = tname;
     }
 
     /// Returns job for processing from the watched tubes.
     /// Client will block no more then 'timeout' seconds if job for processing does not exist.
-    pub fn reserve(cl: *Client, timeout: u32) ReturnedError!struct { id: u32, job: []const u8 } {
+    pub fn reserve(cl: *Client, timeout: u32) !struct { id: u32, job: []const u8 } {
         _ = cl;
         _ = timeout;
     }
@@ -188,7 +204,7 @@ pub const Client = struct {
     /// Arguments:
     ///     id: job id
     ///
-    pub fn delete(cl: *Client, id: u32) ReturnedError!void {
+    pub fn delete(cl: *Client, id: u32) !void {
         _ = cl;
         _ = id;
     }
@@ -199,36 +215,84 @@ pub const Client = struct {
     ///     tname: tube name
     ///
     /// Returns NotIgnored if watch list contains only one tube.
-    pub fn ignore(cl: *Client, tname: []const u8) ReturnedError!void {
+    pub fn ignore(cl: *Client, tname: []const u8) !void {
         _ = cl;
         _ = tname;
     }
 
+    // max length of the line for write - actually does not matter now
+    // use <tube>\r\n
+    // watch <tube>\r\n
+    // ignore <tube>\r\n
+    // stats-tube <tube>\r\n
+    // pause-tube <tube-name> <delay>\r\n
+
     // Writes the formatted output followed by \r\n to underlying stream.
     fn print_line(cl: *Client, comptime fmt: []const u8, args: anytype) !void {
-        _ = cl;
-        _ = fmt;
-        _ = args;
+        if (cl.connection == null) {
+            return ReturnedError.CommunicationFailure;
+        }
+
+        try cl.connection.?.writer().print(fmt, args);
+        try cl.connection.?.writer().print("\r\n", .{});
     }
 
     // Writes the buffer followed by \r\n to underlying stream.
     fn print_buffer(cl: *Client, buffer: []const u8) !void {
-        _ = cl;
-        _ = buffer;
+        if (cl.connection == null) {
+            return ReturnedError.CommunicationFailure;
+        }
+
+        try cl.connection.?.writer().writeAll(buffer);
+        try cl.connection.?.writer().print("\r\n", .{});
     }
 
     // Flushes underlying stream.
     fn flush(cl: *Client) !void {
-        _ = cl;
+        if (cl.connection == null) {
+            return ReturnedError.CommunicationFailure;
+        }
+
+        try cl.connection.?.flush();
     }
+
+    // max length of the line for read = 6(USING ) + 200(max tube name)
+    // USING <tube>\r\n
 
     // Reads underlying stream till \r\n to the buffer.
     // If buffer is small - returns error.
     // Returns length of the line without \r\n.
     // 0 - for \r\n only.
     fn read_line(cl: *Client, buffer: []u8) !usize {
-        _ = cl;
-        _ = buffer;
+        if (cl.connection == null) {
+            return ReturnedError.CommunicationFailure;
+        }
+
+        var char: u8 = undefined;
+
+        for (0..buffer.len) |indx| {
+            char = try cl.connection.?.reader().readByte();
+            if (char == '\r') {
+                char = try cl.connection.?.reader().readByte();
+                if (char == '\n') {
+                    return indx;
+                }
+            }
+
+            buffer[indx] = char;
+        }
+
+        // last chance - when length of the buffer exactly equals
+        // the length of the line
+        char = try cl.connection.?.reader().readByte();
+        if (char == '\r') {
+            char = try cl.connection.?.reader().readByte();
+            if (char == '\n') {
+                return buffer.len;
+            }
+        }
+
+        return ReturnedError.NoCRLF;
     }
 
     // Reads 'len' bytes from underlying stream to the buffer.
@@ -236,9 +300,11 @@ pub const Client = struct {
     // If buffer is small - returns error.
     // If \r\n were not in the stream - returns error.
     fn read_buffer(cl: *Client, buffer: []u8, len: usize) !void {
-        _ = cl;
-        _ = buffer;
+        if (cl.connection == null) {
+            return ReturnedError.CommunicationFailure;
+        }
         _ = len;
+        _ = buffer;
     }
 
     fn connectTcp(client: *Client, host: []const u8, port: u16) !*Connection {
