@@ -4,7 +4,7 @@
 test {
     _ = @import("name_tests.zig");
     _ = @import("parse_tests.zig");
-    _ = @import("client.zig");
+    _ = @import("client_tests.zig");
 
     @import("std").testing.refAllDecls(@This());
 }

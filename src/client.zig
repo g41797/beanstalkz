@@ -40,10 +40,9 @@ pub const JobState = enum {
 };
 
 pub const Client = struct {
-    ready: bool = false,
     mutex: Mutex = .{},
     allocator: Allocator = undefined,
-    connection: ?Connection = null,
+    connection: ?*Connection = null,
 
     /// Returns connected to beanstalkd client.
     /// Arguments:
@@ -54,14 +53,48 @@ pub const Client = struct {
     /// Returns errors for:
     ///     - failed connection
     ///     - already existing connection
-    pub fn connect(allocator: Allocator, addr: ?[]const u8, port: ?u16) !*Client {
-        _ = allocator;
-        _ = addr;
-        _ = port;
+    pub fn connect(cl: *Client, allocator: Allocator, addr: ?[]const u8, port: ?u16) !void {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        if (cl.connection != null) {
+            return error.AlreadyConnected;
+        }
+
+        cl.allocator = allocator;
+
+        var host: []const u8 = DefaultAddr;
+
+        if (addr != null) {
+            host = addr.?;
+        }
+
+        var prt: u16 = DafaultPort;
+
+        if (port != null) {
+            prt = port.?;
+        }
+
+        cl.connection = try cl.connectTcp(host, prt);
+
+        return;
     }
 
     pub fn disconnect(cl: *Client) void {
-        _ = cl;
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        if (cl.connection == null) {
+            return;
+        }
+
+        cl.connection.?.close(cl.allocator);
+
+        cl.allocator.destroy(cl.connection.?);
+
+        cl.connection = null;
+
+        return;
     }
 
     /// Sets tube name for current produce session
@@ -215,7 +248,7 @@ pub const Client = struct {
         const stream = try net.tcpConnectToHost(client.allocator, host, port);
         errdefer stream.close();
 
-        conn = .{
+        conn.* = .{
             .stream = stream,
             .tls_client = undefined,
             .protocol = Connection.Protocol.plain,

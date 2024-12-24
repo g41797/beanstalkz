@@ -294,3 +294,6 @@ basic-tcp-chat.zig
     
 Build System Tricks
     https://ziggit.dev/t/build-system-tricks/3531
+    
+Check connection
+    sudo netstat --tcp --programs --numeric|grep 11300
