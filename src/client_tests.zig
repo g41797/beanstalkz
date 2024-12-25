@@ -16,10 +16,11 @@ test "connect-disconnect" {
     cl.disconnect();
 }
 
-test "put" {
+test "put-delete" {
     var cl: Client = .{};
     try cl.connect(std.testing.allocator, null, null);
     defer cl.disconnect();
 
-    _ = try cl.put(1, 2, 3, "");
+    const jid = try cl.put(1, 2, 3, "");
+    try cl.delete(jid);
 }

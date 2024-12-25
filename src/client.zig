@@ -100,6 +100,15 @@ pub const Client = struct {
         return;
     }
 
+    // Possible 'ok' responses for supported commands:
+    // INSERTED <id>\r\n
+    // BURIED <id>\r\n - it's also error
+    // USING <tube>\r\n
+    // RESERVED <id> <bytes>\r\n
+    // DELETED\r\n
+    // WATCHING <count>\r\n
+    // OK <bytes>\r\n
+
     /// Sets tube name for current produce session
     /// Arguments:
     ///     tname: tube name
@@ -162,10 +171,20 @@ pub const Client = struct {
         // <data>\r\n
         try cl.print_buffer(job);
         try cl.flush();
-        
-        _ = try cl.read_line(cl.readLine[0..]);
-        
-        return 0;
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        const ret = try parse.parseSize(cl.readLine[0..linelen]);
+
+        const id: u32 = @intCast(ret[1]);
+
+        if (std.mem.startsWith(u8, ret[0], "INSERTED")) {
+            return id;
+        }
+
+        _ = try cl._delete(id);
+
+        return ReturnedError.Buried;
     }
 
     /// Returns state of the job.
@@ -205,8 +224,26 @@ pub const Client = struct {
     ///     id: job id
     ///
     pub fn delete(cl: *Client, id: u32) !void {
-        _ = cl;
-        _ = id;
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        return cl._delete(id);
+    }
+
+    fn _delete(cl: *Client, id: u32) !void {
+        // delete <id>\r\n
+        try cl.print_line("delete {0d}", .{
+            id,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        if (std.mem.startsWith(u8, cl.readLine[0..linelen], "DELETED")) {
+            return;
+        }
+
+        return err.findError(cl.readLine[0..linelen]);
     }
 
     /// Removes the tube from the watch list for the current connection.
@@ -263,7 +300,25 @@ pub const Client = struct {
     // If buffer is small - returns error.
     // Returns length of the line without \r\n.
     // 0 - for \r\n only.
+    // Ignored lines (for now):
+    //  DEADLINE_SOON\r\n
+    //  TIMED_OUT\r\n
+
     fn read_line(cl: *Client, buffer: []u8) !usize {
+        while (true) {
+            const retsize = try cl.read_any_line(buffer);
+
+            if (std.mem.startsWith(u8, buffer[0..retsize], "DEADLINE_SOON")) {
+                continue;
+            }
+            if (std.mem.startsWith(u8, buffer[0..retsize], "TIMED_OUT")) {
+                continue;
+            }
+            return retsize;
+        }
+    }
+
+    fn read_any_line(cl: *Client, buffer: []u8) !usize {
         if (cl.connection == null) {
             return ReturnedError.CommunicationFailure;
         }
