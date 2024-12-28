@@ -16,13 +16,21 @@ test "connect-disconnect" {
     cl.disconnect();
 }
 
-test "put-delete" {
+test "put-state-delete" {
     var cl: Client = .{};
     try cl.connect(std.testing.allocator, null, null);
     defer cl.disconnect();
 
-    const jid = try cl.put(1, 2, 3, "");
+    try testing.expectError(ReturnedError.NotFound, cl.state(1));
+
+    const jid = try cl.put(1, 2, 120, "job body");
+
+    const job_state = cl.state(jid);
+    try testing.expectEqual(job_state, client.JobState.delayed);
+
     try cl.delete(jid);
+
+    try testing.expectError(ReturnedError.NotFound, cl.state(jid));
 }
 
 test "use watch ignore" {

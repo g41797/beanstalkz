@@ -20,6 +20,7 @@ const http = std.http;
 const Connection = http.Client.Connection;
 const Mutex = std.Thread.Mutex;
 const Allocator = std.mem.Allocator;
+const EnumMap = std.enums.EnumMap;
 
 const err = @import("err.zig");
 const ReturnedError = err.ReturnedError;
@@ -36,11 +37,31 @@ pub const DefaultTTR = 60; // 1 minute
 pub const MaxReadLineLen = 256;
 
 pub const JobState = enum {
-    DELAYED,
-    READY,
-    RESERVED,
-    BURIED,
+    delayed,
+    ready,
+    reserved,
+    buried,
+
+    pub fn to_string(js: JobState) ?[]const u8 {
+        return JobStateMap.get(js);
+    }
+
+    pub fn from_string(str: []const u8) ?JobState {
+        if (str.len == 0) {
+            return null;
+        }
+
+        const result = std.meta.stringToEnum(JobState, str);
+        return result;
+    }
 };
+
+pub const JobStateMap = EnumMap(JobState, []u8).init(.{
+    .delayed = "delayed",
+    .ready = "ready",
+    .reserved = "reserved",
+    .buried = "buried",
+});
 
 pub const Client = struct {
     mutex: Mutex = .{},
@@ -200,8 +221,43 @@ pub const Client = struct {
     ///     id: job id
     /// If job does not exists - returns NotFound.
     pub fn state(cl: *Client, id: u32) !JobState {
-        _ = cl;
-        _ = id;
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        // stats-job <id>\r\n
+        try cl.print_line("stats-job {0d}", .{
+            id,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+        if (!std.mem.startsWith(u8, cl.readLine[0..linelen], "OK")) {
+            return err.findError(cl.readLine[0..linelen]);
+        }
+
+        _ = try parse.parseSize(cl.readLine[0..linelen]);
+
+        var result: ?JobState = null;
+
+        var length: usize = 1;
+        while (true) {
+            length = try cl.read_line(cl.readLine[0..]);
+            if (length == 0) {
+                break;
+            }
+
+            if (!std.mem.startsWith(u8, cl.readLine[0..length], "state: ")) {
+                continue;
+            }
+
+            result = JobState.from_string(cl.readLine[7..length]);
+        }
+
+        if (result == null) {
+            return ReturnedError.NotFound;
+        }
+
+        return result.?;
     }
 
     /// Adds tube to the watch list for the current connection.
@@ -254,22 +310,6 @@ pub const Client = struct {
         return cl._delete(id);
     }
 
-    fn _delete(cl: *Client, id: u32) !void {
-        // delete <id>\r\n
-        try cl.print_line("delete {0d}", .{
-            id,
-        });
-        try cl.flush();
-
-        const linelen = try cl.read_line(cl.readLine[0..]);
-
-        if (std.mem.startsWith(u8, cl.readLine[0..linelen], "DELETED")) {
-            return;
-        }
-
-        return err.findError(cl.readLine[0..linelen]);
-    }
-
     /// Removes the tube from the watch list for the current connection.
     ///
     /// Arguments:
@@ -301,6 +341,22 @@ pub const Client = struct {
         const tubes: u32 = @intCast(ret[1]);
 
         return tubes;
+    }
+
+    fn _delete(cl: *Client, id: u32) !void {
+        // delete <id>\r\n
+        try cl.print_line("delete {0d}", .{
+            id,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        if (std.mem.startsWith(u8, cl.readLine[0..linelen], "DELETED")) {
+            return;
+        }
+
+        return err.findError(cl.readLine[0..linelen]);
     }
 
     // max length of the line for write - actually does not matter now
@@ -342,7 +398,7 @@ pub const Client = struct {
     // max length of the line for read = 6(USING ) + 200(max tube name)
     // USING <tube>\r\n
 
-    // Reads underlying stream till \r\n to the buffer.
+    // Reads underlying stream till \r\n or \n to the buffer.
     // If buffer is small - returns error.
     // Returns length of the line without \r\n.
     // 0 - for \r\n only.
@@ -352,28 +408,29 @@ pub const Client = struct {
         }
 
         var char: u8 = undefined;
-
+        var skip: usize = 0;
         for (0..buffer.len) |indx| {
             char = try cl.connection.?.reader().readByte();
             if (char == '\r') {
-                char = try cl.connection.?.reader().readByte();
-                if (char == '\n') {
-                    return indx;
-                }
+                skip = 1;
+                continue;
             }
-
+            if (char == '\n') {
+                return indx - skip;
+            }
+            skip = 0;
             buffer[indx] = char;
         }
 
-        // last chance - when length of the buffer exactly equals
-        // the length of the line
-        char = try cl.connection.?.reader().readByte();
-        if (char == '\r') {
-            char = try cl.connection.?.reader().readByte();
-            if (char == '\n') {
-                return buffer.len;
-            }
-        }
+        // // last chance - when length of the buffer exactly equals
+        // // the length of the line
+        // char = try cl.connection.?.reader().readByte();
+        // if (char == '\r') {
+        //     char = try cl.connection.?.reader().readByte();
+        //     if (char == '\n') {
+        //         return buffer.len;
+        //     }
+        // }
 
         return ReturnedError.NoCRLF;
     }
@@ -408,28 +465,4 @@ pub const Client = struct {
 
         return conn;
     }
-
-    // fn read_line(cl: *Client, buffer: []u8) !usize {
-    //     while (true) {
-    //         const retsize = try cl.read_any_line(buffer);
-    //
-    //         if (std.mem.startsWith(u8, buffer[0..retsize], "DEADLINE_SOON")) {
-    //             continue;
-    //         }
-    //         if (std.mem.startsWith(u8, buffer[0..retsize], "TIMED_OUT")) {
-    //             continue;
-    //         }
-    //         return retsize;
-    //     }
-    // }
-
-    // /// Returns true if tname is the same as tube name set by 'use'
-    // /// If was not set - returns true if tname is "default"
-    // pub fn is_current(cl: *Client, tname: []const u8) !bool {
-    //     _ = cl;
-    //     _ = tname;
-    //
-    //     return false;
-    // }
-
 };
