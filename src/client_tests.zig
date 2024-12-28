@@ -24,3 +24,23 @@ test "put-delete" {
     const jid = try cl.put(1, 2, 3, "");
     try cl.delete(jid);
 }
+
+test "use watch ignore" {
+    var cl: Client = .{};
+    try cl.connect(std.testing.allocator, null, null);
+    defer cl.disconnect();
+
+    var watched: u32 = 0;
+
+    try testing.expectEqual(watched, 0);
+
+    try cl.use(client.DafaultTube);
+
+    watched = try cl.watch("nondefaulttube");
+
+    try testing.expectEqual(watched, 2); // Strange behaviour of beanstalkd
+
+    _ = try cl.ignore("nondefaulttube");
+
+    try testing.expectError(ReturnedError.NotIgnored, cl.ignore(client.DafaultTube));
+}

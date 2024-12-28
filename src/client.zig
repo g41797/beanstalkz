@@ -8,7 +8,7 @@
 //! Zig beanstalk client supports **subset** of commands:
 //! - _use_: set current tube(queue)
 //! - _put_: submit job
-//! - _state_: jet job state
+//! - _state_: get job state
 //! - _watch_: subscribe to jobs submitted to the tube
 //! - _reserve-with-timeout_: consume job
 //! - _ignore_: un-subscribe
@@ -24,6 +24,7 @@ const Allocator = std.mem.Allocator;
 const err = @import("err.zig");
 const ReturnedError = err.ReturnedError;
 const parse = @import("parse.zig");
+const tubename = @import("name.zig");
 
 pub const DefaultAddr = "127.0.0.1";
 pub const DafaultPort = 11300;
@@ -101,13 +102,15 @@ pub const Client = struct {
     }
 
     // Possible 'ok' responses for supported commands:
-    // INSERTED <id>\r\n
-    // BURIED <id>\r\n - it's also error
-    // USING <tube>\r\n
-    // RESERVED <id> <bytes>\r\n
-    // DELETED\r\n
-    // WATCHING <count>\r\n
-    // OK <bytes>\r\n
+    //  Single line
+    //      INSERTED <id>\r\n
+    //      BURIED <id>\r\n - it's also error
+    //      USING <tube>\r\n
+    //      DELETED\r\n
+    //      WATCHING <count>\r\n
+    //  With body
+    //      RESERVED <id> <bytes>\r\n
+    //      OK <bytes>\r\n
 
     /// Sets tube name for current produce session
     /// Arguments:
@@ -118,17 +121,18 @@ pub const Client = struct {
     ///     - failed communication
     ///     - wrong tube name
     pub fn use(cl: *Client, tname: []const u8) !void {
-        _ = cl;
-        _ = tname;
-    }
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
 
-    /// Returns true if tname is the same as tube name set by 'use'
-    /// If was not set - returns true if tname is "default"
-    pub fn is_current(cl: *Client, tname: []const u8) !bool {
-        _ = cl;
-        _ = tname;
+        try tubename.checkName(tname);
 
-        return false;
+        // use <tube>\r\n
+        try cl.print_line("use {0s}", .{
+            tname,
+        });
+        try cl.flush();
+
+        _ = try cl.read_line(cl.readLine[0..]);
     }
 
     /// Inserts a job into the client's currently used tube(queue).
@@ -182,9 +186,12 @@ pub const Client = struct {
             return id;
         }
 
-        _ = try cl._delete(id);
+        if (std.mem.startsWith(u8, ret[0], "BURIED")) {
+            _ = try cl._delete(id);
+            return ReturnedError.Buried;
+        }
 
-        return ReturnedError.Buried;
+        return err.findError(cl.readLine[0..linelen]);
     }
 
     /// Returns state of the job.
@@ -204,9 +211,26 @@ pub const Client = struct {
     /// Arguments:
     ///     tname: tube name
     ///
-    pub fn watch(cl: *Client, tname: []const u8) !void {
-        _ = cl;
-        _ = tname;
+    /// Returns the integer number of tubes currently in the watch list
+    pub fn watch(cl: *Client, tname: []const u8) !u32 {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        try tubename.checkName(tname);
+
+        // watch <tube>\r\n
+        try cl.print_line("watch {0s}", .{
+            tname,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        const ret = try parse.parseSize(cl.readLine[0..linelen]);
+
+        const tubes: u32 = @intCast(ret[1]);
+
+        return tubes;
     }
 
     /// Returns job for processing from the watched tubes.
@@ -251,10 +275,32 @@ pub const Client = struct {
     /// Arguments:
     ///     tname: tube name
     ///
-    /// Returns NotIgnored if watch list contains only one tube.
-    pub fn ignore(cl: *Client, tname: []const u8) !void {
-        _ = cl;
-        _ = tname;
+    /// Returns
+    ///     - the integer number of tubes currently in the watch list
+    ///     - NotIgnored if watch list contains only one tube.
+    pub fn ignore(cl: *Client, tname: []const u8) !u32 {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        try tubename.checkName(tname);
+
+        // ignore <tube>\r\n
+        try cl.print_line("ignore {0s}", .{
+            tname,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        if (!std.mem.startsWith(u8, cl.readLine[0..linelen], "WATCHING")) {
+            return ReturnedError.NotIgnored;
+        }
+
+        const ret = try parse.parseSize(cl.readLine[0..linelen]);
+
+        const tubes: u32 = @intCast(ret[1]);
+
+        return tubes;
     }
 
     // max length of the line for write - actually does not matter now
@@ -300,25 +346,7 @@ pub const Client = struct {
     // If buffer is small - returns error.
     // Returns length of the line without \r\n.
     // 0 - for \r\n only.
-    // Ignored lines (for now):
-    //  DEADLINE_SOON\r\n
-    //  TIMED_OUT\r\n
-
     fn read_line(cl: *Client, buffer: []u8) !usize {
-        while (true) {
-            const retsize = try cl.read_any_line(buffer);
-
-            if (std.mem.startsWith(u8, buffer[0..retsize], "DEADLINE_SOON")) {
-                continue;
-            }
-            if (std.mem.startsWith(u8, buffer[0..retsize], "TIMED_OUT")) {
-                continue;
-            }
-            return retsize;
-        }
-    }
-
-    fn read_any_line(cl: *Client, buffer: []u8) !usize {
         if (cl.connection == null) {
             return ReturnedError.CommunicationFailure;
         }
@@ -380,4 +408,28 @@ pub const Client = struct {
 
         return conn;
     }
+
+    // fn read_line(cl: *Client, buffer: []u8) !usize {
+    //     while (true) {
+    //         const retsize = try cl.read_any_line(buffer);
+    //
+    //         if (std.mem.startsWith(u8, buffer[0..retsize], "DEADLINE_SOON")) {
+    //             continue;
+    //         }
+    //         if (std.mem.startsWith(u8, buffer[0..retsize], "TIMED_OUT")) {
+    //             continue;
+    //         }
+    //         return retsize;
+    //     }
+    // }
+
+    // /// Returns true if tname is the same as tube name set by 'use'
+    // /// If was not set - returns true if tname is "default"
+    // pub fn is_current(cl: *Client, tname: []const u8) !bool {
+    //     _ = cl;
+    //     _ = tname;
+    //
+    //     return false;
+    // }
+
 };
