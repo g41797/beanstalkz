@@ -9,6 +9,7 @@ const ReturnedError = err.ReturnedError;
 const client = @import("client.zig");
 const Client = client.Client;
 const Allocator = std.mem.Allocator;
+const Job = @import("job.zig").Job;
 
 test "connect-disconnect" {
     var cl: Client = .{};
@@ -16,20 +17,33 @@ test "connect-disconnect" {
     cl.disconnect();
 }
 
-test "put-state-delete" {
+test "put-state-reserve-delete" {
     var cl: Client = .{};
     try cl.connect(std.testing.allocator, null, null);
     defer cl.disconnect();
 
-    try testing.expectError(ReturnedError.NotFound, cl.state(1));
+    const firstJob = 1;
+    if (cl.delete(firstJob)) {} else |_| {}
+    try testing.expectError(ReturnedError.NotFound, cl.state(firstJob));
 
-    const jid = try cl.put(1, 2, 120, "job body");
+    const job_body = "job body";
+    const jid = try cl.put(1, 0, 120, job_body);
 
-    const job_state = cl.state(jid);
-    try testing.expectEqual(job_state, client.JobState.delayed);
+    var job_state = cl.state(jid);
+    try testing.expectEqual(job_state, client.JobState.ready);
+
+    var job: Job = .{};
+    try job.init(std.testing.allocator);
+    defer job.free();
+
+    try cl.reserve(0, &job);
+    const rid = job.id().?;
+    job_state = cl.state(rid);
+    try testing.expectEqual(job_state, client.JobState.reserved);
+    try testing.expectEqual(jid, rid);
+    try testing.expectEqual(std.mem.eql(u8, job_body, job.body().?), true);
 
     try cl.delete(jid);
-
     try testing.expectError(ReturnedError.NotFound, cl.state(jid));
 }
 

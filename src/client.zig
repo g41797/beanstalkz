@@ -307,13 +307,13 @@ pub const Client = struct {
             return err.findError(cl.readLine[0..linelen]);
         }
 
-        const ret = try parse.parseSize(cl.readLine[0..linelen]);
+        var ret = try parse.parseSize(cl.readLine[0..linelen]);
 
         const jsize: usize = ret[1];
 
         try job.alloc(jsize);
 
-        try cl.read_buffer(job.buffer[0..job.len], jsize);
+        try cl.read_buffer(job.buffer.?[0..job.len], jsize);
 
         job.actual_len = jsize;
 
@@ -321,7 +321,7 @@ pub const Client = struct {
 
         const jid: usize = ret[1];
 
-        job.jid = jid;
+        job.jid = @intCast(jid);
 
         return;
     }
@@ -473,15 +473,18 @@ pub const Client = struct {
         if (cl.connection == null) {
             return ReturnedError.CommunicationFailure;
         }
+        if (len > buffer.len) {
+            return ReturnedError.Internal;
+        }
         if (len > 0) {
-            const rlen = try cl.connection.?.reader().readAtLeast(buffer, len);
+            const rlen = try cl.connection.?.reader().readAll(buffer[0..len]);
 
             if (rlen < len) {
                 return ReturnedError.NoCRLF;
             }
         }
         var rn: [2]u8 = undefined;
-        _ = try cl.readLine(&rn[0..2], 2);
+        _ = try cl.read_line(rn[0..2]);
 
         return;
     }
