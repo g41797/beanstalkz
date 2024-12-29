@@ -26,6 +26,7 @@ const err = @import("err.zig");
 const ReturnedError = err.ReturnedError;
 const parse = @import("parse.zig");
 const tubename = @import("name.zig");
+const Job = @import("job.zig").Job;
 
 pub const DefaultAddr = "127.0.0.1";
 pub const DafaultPort = 11300;
@@ -289,11 +290,40 @@ pub const Client = struct {
         return tubes;
     }
 
-    /// Returns job for processing from the watched tubes.
+    /// Receives job for processing from the watched tubes.
     /// Client will block no more then 'timeout' seconds if job for processing does not exist.
-    pub fn reserve(cl: *Client, timeout: u32) !struct { id: u32, job: []const u8 } {
-        _ = cl;
-        _ = timeout;
+    pub fn reserve(cl: *Client, timeout: u32, job: *Job) !void {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        // reserve-with-timeout <seconds>\r\n
+        try cl.print_line("reserve-with-timeout {0d}", .{
+            timeout,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+        if (!std.mem.startsWith(u8, cl.readLine[0..linelen], "RESERVED")) {
+            return err.findError(cl.readLine[0..linelen]);
+        }
+
+        const ret = try parse.parseSize(cl.readLine[0..linelen]);
+
+        const jsize: usize = ret[1];
+
+        try job.alloc(jsize);
+
+        try cl.read_buffer(job.buffer[0..job.len], jsize);
+
+        job.actual_len = jsize;
+
+        ret = try parse.parseSize(ret[0]);
+
+        const jid: usize = ret[1];
+
+        job.jid = jid;
+
+        return;
     }
 
     /// Removes a job from the server entirely.
@@ -443,8 +473,17 @@ pub const Client = struct {
         if (cl.connection == null) {
             return ReturnedError.CommunicationFailure;
         }
-        _ = len;
-        _ = buffer;
+        if (len > 0) {
+            const rlen = try cl.connection.?.reader().readAtLeast(buffer, len);
+
+            if (rlen < len) {
+                return ReturnedError.NoCRLF;
+            }
+        }
+        var rn: [2]u8 = undefined;
+        _ = try cl.readLine(&rn[0..2], 2);
+
+        return;
     }
 
     fn connectTcp(client: *Client, host: []const u8, port: u16) !*Connection {

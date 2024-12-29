@@ -5,3 +5,4 @@ const name = @import("name.zig");
 const parse = @import("parse.zig");
 const err = @import("err.zig");
 const client = @import("client.zig");
+const job = @import("job.zig");
