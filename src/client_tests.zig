@@ -66,3 +66,48 @@ test "use watch ignore" {
 
     try testing.expectError(ReturnedError.NotIgnored, cl.ignore(client.DafaultTube));
 }
+
+test "all-staff" {
+    var cl: Client = .{};
+    try cl.connect(std.testing.allocator, null, null);
+    defer cl.disconnect();
+
+    const firstJob = 1;
+    if (cl.delete(firstJob)) {} else |_| {}
+    try testing.expectError(ReturnedError.NotFound, cl.state(firstJob));
+    try testing.expectError(ReturnedError.NotFound, cl.kick_job(firstJob));
+
+    _ = try cl.watch("nondefaulttube");
+    defer if (cl.ignore("nondefaulttube")) |_| {} else |_| {};
+
+    const job_body = "job body";
+    const jid = try cl.put(1, 360, 120, job_body);
+    var job_state = cl.state(jid);
+    try testing.expectEqual(job_state, client.JobState.delayed);
+
+    try cl.kick_job(jid);
+    job_state = cl.state(jid);
+    try testing.expectEqual(job_state, client.JobState.ready);
+
+    var job: Job = .{};
+    try job.init(std.testing.allocator);
+    defer job.free();
+
+    try cl.reserve(0, &job);
+    const rid = job.id().?;
+    job_state = cl.state(rid);
+    try testing.expectEqual(job_state, client.JobState.reserved);
+    try testing.expectEqual(jid, rid);
+    try testing.expectEqual(std.mem.eql(u8, job_body, job.body().?), true);
+
+    try cl.bury(rid, 2);
+    job_state = cl.state(rid);
+    try testing.expectEqual(job_state, client.JobState.buried);
+
+    try cl.delete(jid);
+    try testing.expectError(ReturnedError.NotFound, cl.state(jid));
+}
+
+// inline fn ignore_err(cl: *Client) void {
+//     if (cl.ignore("nondefaulttube")) |_| {} else |_| {}
+// }

@@ -11,6 +11,8 @@
 //! - _state_: get job state
 //! - _watch_: subscribe to jobs submitted to the tube
 //! - _reserve-with-timeout_: consume job
+//! - _bury_:   puts job to the failed("buried") state
+//! - _kick-job_: puts delayed of failed job to the ready state
 //! - _ignore_: un-subscribe
 //! - _delete_: remove job from the system
 
@@ -149,11 +151,11 @@ pub const Client = struct {
     ///
     ///     job: a sequence of bytes
     ///
-    ///      Returns id of new created job for sucess.
-    ///      Returns errors if:
-    ///      - TODO - add list of errors
-    ///      - if the server ran out of memory (returned <BURIED id>) - client automatically
-    ///      delete buried job
+    /// Returns id of new created job for sucess.
+    /// Returns errors if:
+    ///     - TODO - add list of errors
+    ///     - if the server ran out of memory (returned <BURIED id>) - client automatically
+    ///     deletes buried job
     ///
     pub fn put(cl: *Client, pri: u32, delay: u32, ttr: u32, job: []const u8) !u32 {
         cl.mutex.lock();
@@ -297,6 +299,67 @@ pub const Client = struct {
         job.jid = @intCast(jid);
 
         return;
+    }
+
+    /// Puts a job in a failed("burried") state.
+    /// The job cannot be reprocessed until it is manually kicked back into the tube.
+    ///
+    /// Arguments:
+    ///
+    ///     id: job id
+    ///
+    ///     pri: is an integer < 2**32. Jobs with smaller priority values will be
+    ///     scheduled before jobs with larger priorities. The most urgent priority is 0;
+    ///     the least urgent priority is 4,294,967,295.
+    ///
+    /// Returns errors if:
+    /// - the job does not exist
+    /// - the job is not reserved by the client.
+    pub fn bury(cl: *Client, id: u32, pri: u32) !void {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        // bury <id> <pri>\r\n
+        try cl.print_line("bury {0d} {1d}", .{
+            id,
+            pri,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        if (std.mem.startsWith(u8, cl.readLine[0..linelen], "BURIED")) {
+            return;
+        }
+
+        return err.findError(cl.readLine[0..linelen]);
+    }
+
+    /// Returns a delayed or previously buried  job to the ready state.
+    ///
+    /// Arguments:
+    ///     id: job id
+    ///
+    /// Returns errors if:
+    /// - the job does not exist
+    /// - the job is not in allowable for kick state
+    pub fn kick_job(cl: *Client, id: u32) !void {
+        cl.mutex.lock();
+        defer cl.mutex.unlock();
+
+        // kick-job <id>\r\n
+        try cl.print_line("kick-job {0d}", .{
+            id,
+        });
+        try cl.flush();
+
+        const linelen = try cl.read_line(cl.readLine[0..]);
+
+        if (std.mem.startsWith(u8, cl.readLine[0..linelen], "KICKED")) {
+            return;
+        }
+
+        return err.findError(cl.readLine[0..linelen]);
     }
 
     /// Removes a job from the server entirely.

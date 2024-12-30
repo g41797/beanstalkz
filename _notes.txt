@@ -1,8 +1,8 @@
-Pneumatic tube
-    https://en.wikipedia.org/wiki/Pneumatic_tube
+Giant Killing with Beanstalkd
+    https://www.sitepoint.com/giant-killing-with-beanstalkd/
 
-Pneumatic Networks
-    http://douglas-self.com/MUSEUM/COMMS/pneumess/pneumess.htm 
+Getting Started with Beanstalkd
+    https://lornajane.net/posts/2014/getting-started-with-beanstalkd
 
 beanstalkd
     https://beanstalkd.github.io/
@@ -302,4 +302,11 @@ Zig callbacks
     https://ziggit.dev/t/how-to-use-callbacks-with-run-time-arguments/2449
     https://stackoverflow.com/questions/74251650/how-to-pass-zig-function-pointers-to-other-functions
     https://ziglang.org/documentation/master/#Functions
+
+Pneumatic tube
+    https://en.wikipedia.org/wiki/Pneumatic_tube
+
+Pneumatic Networks
+    http://douglas-self.com/MUSEUM/COMMS/pneumess/pneumess.htm 
+
     

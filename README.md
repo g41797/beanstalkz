@@ -10,16 +10,19 @@ WIP
 ```txt
                 Job lifecycle   
    
-   put with delay             
-  ----------------> [DELAYED] 
+   put with delay                                 delete             
+  ----------------> [DELAYED] ---------------------------X
                         |     
-                        | (time passes)
+                        | kick or time passes
                         |              
    put                  v     reserve              delete
   -----------------> [READY] ---------> [RESERVED] ------X
-                       |  
-                       |
-                       |  delete
+                       |  ^                 |  
+                       |  |                 | bury
+                       |  |   kick          v      delete
+                       |   `------------ [BURIED]  ------X    
+                       |                  
+                       |                           delete
                         `--------------------------------X
 ```
 
