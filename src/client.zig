@@ -20,13 +20,13 @@ const http = std.http;
 const Connection = http.Client.Connection;
 const Mutex = std.Thread.Mutex;
 const Allocator = std.mem.Allocator;
-const EnumMap = std.enums.EnumMap;
 
 const err = @import("err.zig");
 const ReturnedError = err.ReturnedError;
 const parse = @import("parse.zig");
 const tubename = @import("name.zig");
 const Job = @import("job.zig").Job;
+pub const JobState = @import("job.zig").JobState;
 
 pub const DefaultAddr = "127.0.0.1";
 pub const DafaultPort = 11300;
@@ -36,33 +36,6 @@ pub const DefaultPriority = 1024; // most urgent: 0, least urgent: 4294967295
 pub const DefaultTTR = 60; // 1 minute
 
 pub const MaxReadLineLen = 256;
-
-pub const JobState = enum {
-    delayed,
-    ready,
-    reserved,
-    buried,
-
-    pub fn to_string(js: JobState) ?[]const u8 {
-        return JobStateMap.get(js);
-    }
-
-    pub fn from_string(str: []const u8) ?JobState {
-        if (str.len == 0) {
-            return null;
-        }
-
-        const result = std.meta.stringToEnum(JobState, str);
-        return result;
-    }
-};
-
-pub const JobStateMap = EnumMap(JobState, []u8).init(.{
-    .delayed = "delayed",
-    .ready = "ready",
-    .reserved = "reserved",
-    .buried = "buried",
-});
 
 pub const Client = struct {
     mutex: Mutex = .{},

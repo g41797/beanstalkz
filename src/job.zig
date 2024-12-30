@@ -3,6 +3,34 @@
 
 const std = @import("std");
 const Allocator = std.mem.Allocator;
+const EnumMap = std.enums.EnumMap;
+
+pub const JobState = enum {
+    delayed,
+    ready,
+    reserved,
+    buried,
+
+    pub fn to_string(js: JobState) ?[]const u8 {
+        return JobStateMap.get(js);
+    }
+
+    pub fn from_string(str: []const u8) ?JobState {
+        if (str.len == 0) {
+            return null;
+        }
+
+        const result = std.meta.stringToEnum(JobState, str);
+        return result;
+    }
+};
+
+const JobStateMap = EnumMap(JobState, []u8).init(.{
+    .delayed = "delayed",
+    .ready = "ready",
+    .reserved = "reserved",
+    .buried = "buried",
+});
 
 pub const Job = struct {
     ready: bool = false,

@@ -297,3 +297,9 @@ Build System Tricks
     
 Check connection
     sudo netstat --tcp --programs --numeric|grep 11300
+    
+Zig callbacks
+    https://ziggit.dev/t/how-to-use-callbacks-with-run-time-arguments/2449
+    https://stackoverflow.com/questions/74251650/how-to-pass-zig-function-pointers-to-other-functions
+    https://ziglang.org/documentation/master/#Functions
+    
