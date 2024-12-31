@@ -34,7 +34,7 @@ test "put-state-reserve-delete" {
 
     var job: Job = .{};
     try job.init(std.testing.allocator);
-    defer job.free();
+    defer job.deinit();
 
     try cl.reserve(0, &job);
     const rid = job.id().?;
@@ -91,7 +91,7 @@ test "all-staff" {
 
     var job: Job = .{};
     try job.init(std.testing.allocator);
-    defer job.free();
+    defer job.deinit();
 
     try cl.reserve(0, &job);
     const rid = job.id().?;

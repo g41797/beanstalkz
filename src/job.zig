@@ -49,6 +49,9 @@ pub const Job = struct {
     }
 
     pub fn alloc(job: *Job, len: usize) !void {
+        if (!job.ready) {
+            return error.NotInitialized;
+        }
         if (job.buffer == null) {
             job.len = roundlen(len);
             job.buffer = try job.allocator.alloc(u8, job.len);
@@ -66,7 +69,11 @@ pub const Job = struct {
         return job.alloc(rlen);
     }
 
-    pub fn free(job: *Job) void {
+    pub fn deinit(job: *Job) void {
+        job.free();
+    }
+
+    fn free(job: *Job) void {
         if (job.buffer != null) {
             job.allocator.free(job.buffer.?);
             job.buffer = null;
