@@ -1,21 +1,61 @@
 ![](_logo/1p0c_8c0637.jpg)
 
-# Zig client for beanstalkd
+# Zig client for Beanstalkd
 [![CI](https://github.com/g41797/beanstalkz/actions/workflows/ci.yml/badge.svg)](https://github.com/g41797/beanstalkz/actions/workflows/ci.yml)
 
 
-## Overview
+[Beanstalkd](https://pmatseykanets.github.io/beanstalkd-docs/) is
+>             Simple and fast general purpose work queue.
+>         The beauty of Beanstalkd is its absolute simplicity.
 
-[beanstalkd](https://pmatseykanets.github.io/beanstalkd-docs/) is
->             Simple and fast general purpose work queue
 
-Producers connected through TCP sockets send in jobs to be processed at a later time by a consumer.
+Actually you can use just 3 commands
 
-If you don't have experience using `beanstalkd`, it's a good idea to read:
+- submit(put) job into the queue
+- take(reserve) job from the queue for processing
+- delete job from the queue
+
+```zig
+    // On producer side
+    _ = try producer.put(1, 0, 120, "job data");
+
+
+    // On worker side
+    var job: Job = .{};
+    try job.init(allocator);
+    defer job.deinit();
+    
+    try worker.reserve(10, &job);
+        
+    // job.body().? - contains "job data"
+    // process job
+    // ...........
+
+    // job.id().?   - contains job id
+    try worker.delete(job.id().?);
+```
+
+Beanstalkd is the part of main distros, you can install it using [appropriate package manager](https://pmatseykanets.github.io/beanstalkd-docs/guide/installation.html).
+
+And of course you can use Beanstalkd [with Docker](https://hub.docker.com/search?q=beanstalkd).  
+
+If you don't have experience using `Beanstalkd`, it's a good idea to read:
 - [beanstalkd protocol](https://pmatseykanets.github.io/beanstalkd-docs/protocol/)
 - [beanstalkd FAQ](https://pmatseykanets.github.io/beanstalkd-docs/resources/faq.html)
 
-## Job lifecycle
+## Job
+
+*Job* is opaque array of bytes. Beanstalkd does not force you to use a specific data format.
+
+After being placed in a queue, job can be in the following states:
+
+- delayed (waiting for time-out before moving to next state) 
+- ready (for processing)
+- reserved (processed)
+- buried (failed)
+
+
+## Job lifecycle supported by beanstalkz
 ```txt
    put with delay                                 delete             
   ----------------> [DELAYED] ---------------------------X
@@ -32,6 +72,71 @@ If you don't have experience using `beanstalkd`, it's a good idea to read:
                        |                           delete
                         `--------------------------------X
 ```
+
+
+## Tube
+
+Instead of the term 'queue' Beanstalkd uses term 'tube'.
+
+*Tube* is 'named queue'. Every tube has 3 sub-queues:
+
+- delay - contains jobs in 'delayed' state
+- ready - contains jobs in 'ready' or 'reserved' states
+- bury (dead-letter) - contains failed jobs
+
+>Tubes are created on demand whenever they are referenced.
+> 
+> If a tube is empty (that is, it contains no ready, delayed, or buried jobs)
+> 
+> and no client refers to it, it will be deleted.
+
+*"default"* tube exists always.
+
+## Supported commands
+
+| Name                                                                                   |                 Description                  |
+|:---------------------------------------------------------------------------------------|:--------------------------------------------:|
+| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)      |           Set current tube(queue)            |
+| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)      |          Submit job to current tube          |
+| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)    |   Subscribe to jobs submitted to the tube    |
+| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)  |                 Consume job                  |
+| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)     |    Put job to the failed("buried") state     |
+| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424) | Put delayed of failed job to the ready state |
+| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)   |                 Un-subscribe                 |
+| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)   |          Remove job from the system          |
+| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)    |          Get job state        |
+  
+ 
+
+
+
+
+## Installation
+
+Add *beanstalkz* to build.zig.zon:
+```bach
+zig fetch --save=beanstalkz git+https://github.com/g41797/beanstalkz
+```
+
+Add *beanstalkz* to build.zig:
+```zig
+    const beanstalkz = b.dependency("beanstalkz", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const lib = b.addStaticLibrary(..);
+    lib.root_module.addImport("beanstalkz", beanstalkz.module("beanstalkz"));
+
+    const lib_unit_tests = b.addTest(...);
+    lib_unit_tests.root_module.addImport("beanstalkz", beanstalkz.module("beanstalkz"));
+```
+
+Import *beanstalkz*:
+```zig
+const beanstalkz = @import("beanstalkz");
+```
+
 
 ## Credits
 Content of README is heavily inspired by 
