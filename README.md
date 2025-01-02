@@ -57,54 +57,58 @@ After being placed in a queue, job can be in the following states:
 
 ## Job lifecycle supported by beanstalkz
 ```txt
-   put with delay                                 delete             
+  'put' with delay                                'delete'             
   ----------------> [DELAYED] ---------------------------X
                         |     
-                        | kick or time passes
+                        | 'kick-job' or time passes
                         |              
-   put                  v     reserve              delete
+  'put'                 v     'reserve'           'delete'
   -----------------> [READY] ---------> [RESERVED] ------X
                        |  ^                 |  
-                       |  |                 | bury
-                       |  |   kick          v      delete
+                       |  |                 | 'bury'
+                       |  |   'kick-job'    v     'delete'
                        |   `------------ [BURIED]  ------X    
                        |                  
-                       |                           delete
+                       |                          'delete'
                         `--------------------------------X
 ```
 
 
 ## Tube
 
-Instead of the term 'queue' Beanstalkd uses term 'tube'.
+Instead of the term 'queue' Beanstalkd uses term 'tube',
+this explains the picture above.
 
-*Tube* is 'named queue'. Every tube has 3 sub-queues:
-
-- delay - contains jobs in 'delayed' state
-- ready - contains jobs in 'ready' or 'reserved' states
-- bury (dead-letter) - contains failed jobs
-
+*Tube* is 'named queue'. 
 >Tubes are created on demand whenever they are referenced.
 > 
 > If a tube is empty (that is, it contains no ready, delayed, or buried jobs)
 > 
 > and no client refers to it, it will be deleted.
 
-*"default"* tube exists always.
+If tube was not referenced, Beanstalkd creates *"default"* tube.
+
+Every tube has 3 sub-queues:
+
+- delay - contains jobs in 'delayed' state
+- ready - contains jobs in 'ready' or 'reserved' states
+- bury (dead-letter) - contains failed jobs
 
 ## Supported commands
 
-| Name                                                                                   |                 Description                  |
-|:---------------------------------------------------------------------------------------|:--------------------------------------------:|
-| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)      |           Set current tube(queue)            |
-| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)      |          Submit job to current tube          |
-| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)    |   Subscribe to jobs submitted to the tube    |
-| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)  |                 Consume job                  |
-| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)     |    Put job to the failed("buried") state     |
-| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424) | Put delayed of failed job to the ready state |
-| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)   |                 Un-subscribe                 |
-| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)   |          Remove job from the system          |
-| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)    |          Get job state        |
+| Name                                                                                     |                 Description                  | API                                                                                                             |
+|:-----------------------------------------------------------------------------------------|:--------------------------------------------:|:----------------------------------------------------------------------------------------------------------------|
+| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)        |           Set current tube(queue)            | use(tname: []const u8)                                                                                          |
+| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)        |          Submit job to current tube          | put(pri: u32, delay: u32, ttr: u32, job: []const u8)                                                            |
+| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)      |   Subscribe to jobs submitted to the tube    | watch(tname: []const u8)                                                                                        |
+| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)    |                 Consume job                  | reserve(timeout: u32, job: *Job)                                                                                |
+| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)       |    Put job to the failed("buried") state     | bury(id: u32, pri: u32)                                                                                         |
+| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed of failed job to the ready state |  kick_job(id: u32)                                                                                                               |
+| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)     |                 Un-subscribe                 |  ignore(tname: []const u8)                                                                                                               |
+| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)     |          Remove job from the system          |  delete(id: u32)                                                                                                               |
+| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)      |                Get job state                 | state(id: u32)                                                                                                  |
+| connect                                                                                  |                   Connect                    | connect(allocator: Allocator, addr: ?[]const u8, port: ?u16)                                                    |
+| [disconnect](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L728) |                  Disconnect                  | disconnect()                                                                                                    |
   
  
 

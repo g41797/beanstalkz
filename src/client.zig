@@ -89,6 +89,10 @@ pub const Client = struct {
             return;
         }
 
+        // quit\r\n
+        _ = cl.print_line("quit", .{}) catch void;
+        _ = cl.flush() catch void;
+
         cl.connection.?.close(cl.allocator);
 
         cl.allocator.destroy(cl.connection.?);
