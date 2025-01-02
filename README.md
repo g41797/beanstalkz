@@ -16,10 +16,9 @@ Actually you can use just 3 commands
 - delete job from the queue
 
 ```zig
-  // On producer side
-  _ = try producer.put(1, 0, 120, "job data");
-
-
+    // On producer side
+    _ = try producer.put(1, 0, 120, "job data");
+    
     // On worker side
     var job: Job = .{};
     try job.init(allocator);
@@ -30,7 +29,7 @@ Actually you can use just 3 commands
     // job.body().? - contains "job data"
     // process job
     // ...........
-
+    
     // job.id().?   - contains job id
     try worker.delete(job.id().?);
 ```
@@ -102,7 +101,7 @@ Every tube has 3 sub-queues:
 | [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)      |   Subscribe to jobs submitted to the tube    |                  [watch(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L243)                   |
 | [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)    |                 Consume job                  |              [reserve(timeout: u32, job: *Job)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L272)               |
 | [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)       |    Put job to the failed("buried") state     |                   [bury(id: u32, pri: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L308)                   |
-| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed of failed job to the ready state |                      [kick_job(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L342)                      |
+| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed or failed job to the ready state |                      [kick_job(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L342)                      |
 | [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)     |                 Un-subscribe                 |                  [ignore(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L383)                  |
 | [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)     |          Remove job from the system          |                       [delete(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L369)                       |
 | [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)      |                Get job state                 |                       [state(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L198)                        |
