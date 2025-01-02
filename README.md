@@ -16,8 +16,8 @@ Actually you can use just 3 commands
 - delete job from the queue
 
 ```zig
-    // On producer side
-    _ = try producer.put(1, 0, 120, "job data");
+  // On producer side
+  _ = try producer.put(1, 0, 120, "job data");
 
 
     // On worker side
@@ -34,7 +34,6 @@ Actually you can use just 3 commands
     // job.id().?   - contains job id
     try worker.delete(job.id().?);
 ```
-
 Beanstalkd is the part of main distros, you can install it using [appropriate package manager](https://pmatseykanets.github.io/beanstalkd-docs/guide/installation.html).
 
 And of course you can use Beanstalkd [with Docker](https://hub.docker.com/search?q=beanstalkd).  
@@ -76,10 +75,10 @@ After being placed in a queue, job can be in the following states:
 
 ## Tube
 
-Instead of the term 'queue' Beanstalkd uses term 'tube',
+Instead of the term _queue_ Beanstalkd uses term _tube_,
 this explains the picture above.
 
-*Tube* is 'named queue'. 
+*Tube* is _named queue_. 
 >Tubes are created on demand whenever they are referenced.
 > 
 > If a tube is empty (that is, it contains no ready, delayed, or buried jobs)
@@ -90,29 +89,27 @@ If tube was not referenced, Beanstalkd creates *"default"* tube.
 
 Every tube has 3 sub-queues:
 
-- delay - contains jobs in 'delayed' state
-- ready - contains jobs in 'ready' or 'reserved' states
+- delay - contains jobs in _delayed_ state
+- ready - contains jobs in _ready_ or _reserved_ states
 - bury (dead-letter) - contains failed jobs
 
 ## Supported commands
 
-| Name                                                                                     |                 Description                  | API                                                                                                             |
-|:-----------------------------------------------------------------------------------------|:--------------------------------------------:|:----------------------------------------------------------------------------------------------------------------|
-| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)        |           Set current tube(queue)            | use(tname: []const u8)                                                                                          |
-| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)        |          Submit job to current tube          | put(pri: u32, delay: u32, ttr: u32, job: []const u8)                                                            |
-| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)      |   Subscribe to jobs submitted to the tube    | watch(tname: []const u8)                                                                                        |
-| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)    |                 Consume job                  | reserve(timeout: u32, job: *Job)                                                                                |
-| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)       |    Put job to the failed("buried") state     | bury(id: u32, pri: u32)                                                                                         |
-| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed of failed job to the ready state |  kick_job(id: u32)                                                                                                               |
-| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)     |                 Un-subscribe                 |  ignore(tname: []const u8)                                                                                                               |
-| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)     |          Remove job from the system          |  delete(id: u32)                                                                                                               |
-| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)      |                Get job state                 | state(id: u32)                                                                                                  |
-| connect                                                                                  |                   Connect                    | connect(allocator: Allocator, addr: ?[]const u8, port: ?u16)                                                    |
-| [disconnect](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L728) |                  Disconnect                  | disconnect()                                                                                                    |
+| Name                                                                                     |                 Description                  |                                                                API                                                                |
+|:-----------------------------------------------------------------------------------------|:--------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
+| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)        |           Set current tube(queue)            |                   [use(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L116)                    |
+| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)        |          Submit job to current tube          |    [put(pri: u32, delay: u32, ttr: u32, job: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L139)     |
+| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)      |   Subscribe to jobs submitted to the tube    |                  [watch(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L243)                   |
+| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)    |                 Consume job                  |              [reserve(timeout: u32, job: *Job)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L272)               |
+| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)       |    Put job to the failed("buried") state     |                   [bury(id: u32, pri: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L308)                   |
+| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed of failed job to the ready state |                      [kick_job(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L342)                      |
+| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)     |                 Un-subscribe                 |                  [ignore(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L383)                  |
+| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)     |          Remove job from the system          |                       [delete(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L369)                       |
+| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)      |                Get job state                 |                       [state(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L198)                        |
+| connect                                                                                  |                   Connect                    | [connect(allocator: Allocator, addr: ?[]const u8, port: ?u16)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L48) |
+| [disconnect](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L728) |                  Disconnect                  |                         [disconnect()](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L84)                         |
   
  
-
-
 
 
 ## Installation
