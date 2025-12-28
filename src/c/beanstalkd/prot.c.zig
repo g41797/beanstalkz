@@ -2818,7 +2818,7 @@ pub fn enqueue_incoming_job(arg_c: [*c]Conn) callconv(.C) void {
     c.*.in_job_read = 0;
     if (memcmp(@as(?*const anyopaque, @ptrCast((j.*.body + @as(usize, @bitCast(@as(isize, @intCast(j.*.r.body_size))))) - @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 2))))))), @as(?*const anyopaque, @ptrCast("\r\n")), @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))) != 0) {
         job_free(j);
-        reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("EXPECTED_CRLF\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+        reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("EXPECTED_CRLF\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         return;
     }
     if (verbose >= @as(c_int, 2)) {
@@ -2828,14 +2828,14 @@ pub fn enqueue_incoming_job(arg_c: [*c]Conn) callconv(.C) void {
         job_free(j);
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 887), "enqueue_incoming_job", "DRAINING\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("DRAINING\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("DRAINING\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
     if (j.*.walresv != 0) {
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 892), "enqueue_incoming_job", "INTERNAL_ERROR\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
@@ -2843,7 +2843,7 @@ pub fn enqueue_incoming_job(arg_c: [*c]Conn) callconv(.C) void {
     if (!(j.*.walresv != 0)) {
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 897), "enqueue_incoming_job", "OUT_OF_MEMORY\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
@@ -2851,7 +2851,7 @@ pub fn enqueue_incoming_job(arg_c: [*c]Conn) callconv(.C) void {
     if (r < @as(c_int, 0)) {
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 906), "enqueue_incoming_job", "INTERNAL_ERROR\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
@@ -2909,7 +2909,7 @@ pub fn read_u64(arg_num: [*c]uint64, arg_buf: [*c]const u8, arg_end: [*c][*c]u8)
     }
     if ((@as(c_int, @bitCast(@as(c_uint, buf[@as(c_uint, @intCast(@as(c_int, 0)))]))) < @as(c_int, '0')) or (@as(c_int, '9') < @as(c_int, @bitCast(@as(c_uint, buf[@as(c_uint, @intCast(@as(c_int, 0)))]))))) return -@as(c_int, 1);
     tnum = strtoumax(buf, &tend, @as(c_int, 10));
-    if (tend == @as([*c]u8, @ptrCast(@volatileCast(@constCast(buf))))) return -@as(c_int, 1);
+    if (tend == @as([*c]u8, @ptrCast(@constCast(@volatileCast(buf))))) return -@as(c_int, 1);
     if (__errno_location().* != 0) return -@as(c_int, 1);
     if (!(end != null) and (@as(c_int, @bitCast(@as(c_uint, tend[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'))) return -@as(c_int, 1);
     if (tnum > @as(c_ulong, 18446744073709551615)) return -@as(c_int, 1);
@@ -2938,7 +2938,7 @@ pub fn read_u32(arg_num: [*c]uint32, arg_buf: [*c]const u8, arg_end: [*c][*c]u8)
     }
     if ((@as(c_int, @bitCast(@as(c_uint, buf[@as(c_uint, @intCast(@as(c_int, 0)))]))) < @as(c_int, '0')) or (@as(c_int, '9') < @as(c_int, @bitCast(@as(c_uint, buf[@as(c_uint, @intCast(@as(c_int, 0)))]))))) return -@as(c_int, 1);
     tnum = strtoumax(buf, &tend, @as(c_int, 10));
-    if (tend == @as([*c]u8, @ptrCast(@volatileCast(@constCast(buf))))) return -@as(c_int, 1);
+    if (tend == @as([*c]u8, @ptrCast(@constCast(@volatileCast(buf))))) return -@as(c_int, 1);
     if (__errno_location().* != 0) return -@as(c_int, 1);
     if (!(end != null) and (@as(c_int, @bitCast(@as(c_uint, tend[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00'))) return -@as(c_int, 1);
     if (tnum > @as(uintmax_t, @bitCast(@as(c_ulong, @as(c_uint, 4294967295))))) return -@as(c_int, 1);
@@ -3015,7 +3015,7 @@ pub fn do_stats(arg_c: [*c]Conn, arg_fmt: fmt_fn, arg_data: ?*anyopaque) callcon
     if (!(c.*.out_job != null)) {
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1123), "do_stats", "OUT_OF_MEMORY\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
@@ -3025,7 +3025,7 @@ pub fn do_stats(arg_c: [*c]Conn, arg_fmt: fmt_fn, arg_data: ?*anyopaque) callcon
     if (r > stats_len) {
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1135), "do_stats", "INTERNAL_ERROR\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
@@ -3057,7 +3057,7 @@ pub fn do_list_tubes(arg_c: [*c]Conn, arg_l: [*c]Ms) callconv(.C) void {
     if (!(c.*.out_job != null)) {
         _ = blk: {
             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1159), "do_list_tubes", "OUT_OF_MEMORY\r\n", "");
-            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         };
         return;
     }
@@ -3199,7 +3199,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
     _ = &t;
     c.*.cmd[c.*.cmd_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 2))))] = '\x00';
     if (strlen(@as([*c]u8, @ptrCast(@alignCast(&c.*.cmd)))) != (c.*.cmd_len -% @as(usize, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-        reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+        reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
         return;
     }
     @"type" = @as(byte, @bitCast(@as(i8, @truncate(which_cmd(c)))));
@@ -3210,16 +3210,16 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
         switch (@as(c_int, @bitCast(@as(c_uint, @"type")))) {
             @as(c_int, 1) => {
                 if ((((read_u32(&pri, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + @as(usize, @bitCast(@as(isize, @intCast(@as(c_int, 4))))), &delay_buf) != 0) or (read_duration(&delay, delay_buf, &ttr_buf) != 0)) or (read_duration(&ttr, ttr_buf, &size_buf) != 0)) or (read_u32(&body_size, size_buf, &end_buf) != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 if (@as(usize, @bitCast(@as(c_ulong, body_size))) > job_data_size_limit) {
-                    _ = _skip(c, @as(int64, @bitCast(@as(c_ulong, body_size))) + @as(int64, @bitCast(@as(c_long, @as(c_int, 2)))), @as([*c]u8, @ptrCast(@volatileCast(@constCast("JOB_TOO_BIG\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+                    _ = _skip(c, @as(int64, @bitCast(@as(c_ulong, body_size))) + @as(int64, @bitCast(@as(c_long, @as(c_int, 2)))), @as([*c]u8, @ptrCast(@constCast(@volatileCast("JOB_TOO_BIG\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))));
                     return;
                 }
                 if (@as(c_int, @bitCast(@as(c_uint, end_buf[@as(c_uint, @intCast(@as(c_int, 0)))]))) != @as(c_int, '\x00')) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 connsetproducer(c);
@@ -3229,7 +3229,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 c.*.in_job = make_job_with_id(pri, delay, ttr, @as(c_int, @bitCast(body_size +% @as(uint32, @bitCast(@as(c_int, 2))))), c.*.use, @as(uint64, @bitCast(@as(c_long, @as(c_int, 0)))));
                 if (!(c.*.in_job != null)) {
                     warnx("%s:%d in %s: server error: OUT_OF_MEMORY\r\n%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1349), "dispatch_cmd", "");
-                    _ = _skip(c, @as(int64, @bitCast(@as(c_ulong, body_size +% @as(uint32, @bitCast(@as(c_int, 2)))))), @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))));
+                    _ = _skip(c, @as(int64, @bitCast(@as(c_ulong, body_size +% @as(uint32, @bitCast(@as(c_int, 2)))))), @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))));
                     return;
                 }
                 fill_extra_data(c);
@@ -3238,7 +3238,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 18) => {
                 if (c.*.cmd_len != ((@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3246,7 +3246,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                     j = job_copy(@as([*c]Job, @ptrCast(@alignCast(c.*.use.*.ready.data[@as(c_uint, @intCast(@as(c_int, 0)))]))));
                 }
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 reply_job(c, j, "FOUND");
@@ -3254,7 +3254,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 19) => {
                 if (c.*.cmd_len != ((@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3262,7 +3262,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                     j = job_copy(@as([*c]Job, @ptrCast(@alignCast(c.*.use.*.delay.data[@as(c_uint, @intCast(@as(c_int, 0)))]))));
                 }
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 reply_job(c, j, "FOUND");
@@ -3270,7 +3270,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 10) => {
                 if (c.*.cmd_len != ((@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3280,7 +3280,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                     j = null;
                 }
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 reply_job(c, j, "FOUND");
@@ -3288,13 +3288,13 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 2) => {
                 if (read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), null) != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 j = job_copy(job_find(id));
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 reply_job(c, j, "FOUND");
@@ -3305,18 +3305,18 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 var utimeout: uint32 = 0;
                 _ = &utimeout;
                 if ((read_u32(&utimeout, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([22]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), &end_buf) != @as(c_int, 0)) or (utimeout > @as(uint32, @bitCast(@as(c_int, 2147483647))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 timeout = @as(c_int, @bitCast(utimeout));
                 if ((@as(c_int, @bitCast(@as(c_uint, @"type"))) == @as(c_int, 3)) and (c.*.cmd_len != ((@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 connsetworker(c);
                 if ((conndeadlinesoon(c) != 0) and !(conn_ready(c) != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("DEADLINE_SOON\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("DEADLINE_SOON\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 wait_for_job(c, timeout);
@@ -3325,13 +3325,13 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 3) => {
                 if ((@as(c_int, @bitCast(@as(c_uint, @"type"))) == @as(c_int, 3)) and (c.*.cmd_len != ((@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2))))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 connsetworker(c);
                 if ((conndeadlinesoon(c) != 0) and !(conn_ready(c) != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("DEADLINE_SOON\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("DEADLINE_SOON\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 wait_for_job(c, timeout);
@@ -3340,17 +3340,17 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 25) => {
                 if (read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), null) != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 j = job_find(id);
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if ((@as(c_int, @bitCast(@as(c_uint, j.*.r.state))) == Reserved) or (@as(c_int, @bitCast(@as(c_uint, j.*.r.state))) == Invalid)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if (@as(c_int, @bitCast(@as(c_uint, j.*.r.state))) == Ready) {
@@ -3362,7 +3362,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 } else {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1497), "dispatch_cmd", "INTERNAL_ERROR\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
@@ -3374,7 +3374,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 4) => {
                 if (read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), null) != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3393,7 +3393,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                     }
                 }
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 j.*.tube.*.stat.total_delete_ct +%= 1;
@@ -3404,22 +3404,22 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 if (!(r != 0)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1539), "dispatch_cmd", "INTERNAL_ERROR\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
-                reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("DELETED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("DELETED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 return;
             },
             @as(c_int, 5) => {
                 if (((read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), &pri_buf) != 0) or (read_u32(&pri, pri_buf, &delay_buf) != 0)) or (read_duration(&delay, delay_buf, null) != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 j = remove_reserved_job(c, job_find(id));
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if (delay != 0) {
@@ -3428,7 +3428,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                     if (!(z != 0)) {
                         _ = blk: {
                             warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1566), "dispatch_cmd", "OUT_OF_MEMORY\r\n", "");
-                            break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                            break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                         };
                         return;
                     }
@@ -3441,27 +3441,27 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 if (r < @as(c_int, 0)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1578), "dispatch_cmd", "INTERNAL_ERROR\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
                 if (r == @as(c_int, 1)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("RELEASED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("RELEASED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 _ = bury_job(c.*.srv, j, @as(u8, @bitCast(@as(i8, @truncate(@as(c_int, 0))))));
-                reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BURIED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BURIED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 return;
             },
             @as(c_int, 6) => {
                 if ((read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), &pri_buf) != 0) or (read_u32(&pri, pri_buf, null) != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 j = remove_reserved_job(c, job_find(id));
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 j.*.r.pri = pri;
@@ -3469,18 +3469,18 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 if (!(r != 0)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1610), "dispatch_cmd", "INTERNAL_ERROR\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
-                reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BURIED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BURIED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 return;
             },
             @as(c_int, 7) => {
                 __errno_location().* = 0;
                 count = @as(uint, @bitCast(@as(c_uint, @truncate(strtoul(@as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), &end_buf, @as(c_int, 10))))));
                 if ((end_buf == (@as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))))) or (__errno_location().* != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3490,38 +3490,38 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 24) => {
                 if (read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), null) != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 j = job_find(id);
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if (((@as(c_int, @bitCast(@as(c_uint, j.*.r.state))) == Buried) and (kick_buried_job(c.*.srv, j) != 0)) or ((@as(c_int, @bitCast(@as(c_uint, j.*.r.state))) == Delayed) and (kick_delayed_job(c.*.srv, j) != 0))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("KICKED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("KICKED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([9]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 } else {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 }
                 return;
             },
             @as(c_int, 21) => {
                 if (read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), null) != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 if (touch_job(c, job_find(id))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("TOUCHED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("TOUCHED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([10]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 } else {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                 }
                 return;
             },
             @as(c_int, 8) => {
                 if (c.*.cmd_len != ((@sizeOf([6]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3530,19 +3530,19 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 9) => {
                 if (read_u64(&id, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), null) != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 j = job_find(id);
                 if (!(j != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if (!(j.*.tube != null)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1691), "dispatch_cmd", "INTERNAL_ERROR\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("INTERNAL_ERROR\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([17]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
@@ -3552,13 +3552,13 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             @as(c_int, 17) => {
                 name = @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
                 if (!is_valid_tube(name, @as(usize, @bitCast(@as(c_long, @as(c_int, 201) - @as(c_int, 1)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 t = tube_find(&tubes, name);
                 if (!(t != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 do_stats(c, @as(fmt_fn, @ptrCast(@alignCast(&fmt_stats_tube))), @as(?*anyopaque, @ptrCast(t)));
@@ -3567,7 +3567,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 14) => {
                 if (c.*.cmd_len != ((@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3576,7 +3576,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 15) => {
                 if (c.*.cmd_len != ((@sizeOf([15]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3585,7 +3585,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 16) => {
                 if (c.*.cmd_len != ((@sizeOf([19]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))) +% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3595,7 +3595,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             @as(c_int, 11) => {
                 name = @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([5]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
                 if (!is_valid_tube(name, @as(usize, @bitCast(@as(c_long, @as(c_int, 201) - @as(c_int, 1)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3613,7 +3613,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 if (!(t != null)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1754), "dispatch_cmd", "OUT_OF_MEMORY\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
@@ -3647,7 +3647,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             @as(c_int, 12) => {
                 name = @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([7]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
                 if (!is_valid_tube(name, @as(usize, @bitCast(@as(c_long, @as(c_int, 201) - @as(c_int, 1)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
@@ -3665,7 +3665,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 if (!(t != null)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1776), "dispatch_cmd", "OUT_OF_MEMORY\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
@@ -3687,7 +3687,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 if (!(r != 0)) {
                     _ = blk: {
                         warnx("%s:%d in %s: server error: %s%s", "src/submodules/beanstalkd/prot.c", @as(c_int, 1785), "dispatch_cmd", "OUT_OF_MEMORY\r\n", "");
-                        break :blk reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                        break :blk reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("OUT_OF_MEMORY\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     };
                     return;
                 }
@@ -3697,13 +3697,13 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             @as(c_int, 13) => {
                 name = @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([8]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))));
                 if (!is_valid_tube(name, @as(usize, @bitCast(@as(c_long, @as(c_int, 201) - @as(c_int, 1)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 t = tube_find(&c.*.watch, name);
                 if ((t != null) and (c.*.watch.len < @as(usize, @bitCast(@as(c_long, @as(c_int, 2)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_IGNORED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_IGNORED\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([14]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if (t != null) {
@@ -3719,18 +3719,18 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
             },
             @as(c_int, 23) => {
                 if ((read_tube_name(&name, @as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))) + (@sizeOf([11]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1))))), &delay_buf) != 0) or (read_duration(&delay, delay_buf, null) != 0)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 op_ct[@"type"] +%= 1;
                 delay_buf.* = '\x00';
                 if (!is_valid_tube(name, @as(usize, @bitCast(@as(c_long, @as(c_int, 201) - @as(c_int, 1)))))) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 t = tube_find(&tubes, name);
                 if (!(t != null)) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("NOT_FOUND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 if (delay == @as(int64, @bitCast(@as(c_long, @as(c_int, 0))))) {
@@ -3743,7 +3743,7 @@ pub fn dispatch_cmd(arg_c: [*c]Conn) callconv(.C) void {
                 return;
             },
             else => {
-                reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("UNKNOWN_COMMAND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([18]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("UNKNOWN_COMMAND\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([18]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
             },
         }
         break;
@@ -3779,11 +3779,11 @@ pub fn conn_timeout(arg_c: [*c]Conn) callconv(.C) void {
     }
     if (should_timeout != 0) {
         remove_waiting_conn(c);
-        reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("DEADLINE_SOON\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+        reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("DEADLINE_SOON\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([16]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
     } else if (((@as(c_int, @bitCast(@as(c_uint, c.*.type))) & @as(c_int, 4)) != 0) and (c.*.pending_timeout >= @as(c_int, 0))) {
         c.*.pending_timeout = -@as(c_int, 1);
         remove_waiting_conn(c);
-        reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("TIMED_OUT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+        reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("TIMED_OUT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
     }
 }
 pub fn conn_want_command(arg_c: [*c]Conn) callconv(.C) void {
@@ -3844,7 +3844,7 @@ pub fn conn_process_io(arg_c: [*c]Conn) callconv(.C) void {
                 c.*.cmd_read += r;
                 c.*.cmd_len = scan_line_end(@as([*c]u8, @ptrCast(@alignCast(&c.*.cmd))), c.*.cmd_read);
                 if (c.*.cmd_len != 0) {
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("BAD_FORMAT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([13]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     fill_extra_data(c);
                     return;
                 }
@@ -3941,7 +3941,7 @@ pub fn conn_process_io(arg_c: [*c]Conn) callconv(.C) void {
                 if (c.*.halfclosed != 0) {
                     c.*.pending_timeout = -@as(c_int, 1);
                     remove_waiting_conn(c);
-                    reply(c, @as([*c]u8, @ptrCast(@volatileCast(@constCast("TIMED_OUT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
+                    reply(c, @as([*c]u8, @ptrCast(@constCast(@volatileCast("TIMED_OUT\r\n")))), @as(c_int, @bitCast(@as(c_uint, @truncate(@sizeOf([12]u8) -% @as(c_ulong, @bitCast(@as(c_long, @as(c_int, 1)))))))), @as(c_int, 3));
                     return;
                 }
                 break;

@@ -309,4 +309,8 @@ Pneumatic tube
 Pneumatic Networks
     http://douglas-self.com/MUSEUM/COMMS/pneumess/pneumess.htm 
 
-    
+Run python as web server
+    python3 -m http.server
+    By default, the server runs on port 8000.
+    Access the server by opening a web browser and navigating to http://localhost:8000
+

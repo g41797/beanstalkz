@@ -3,22 +3,39 @@
 
 const std = @import("std");
 
+/// Errors returned by the beanstalkd server protocol.
+/// These map to the error responses defined in the beanstalkd protocol specification.
 pub const ReturnedError = error{
+    /// Server received a malformed command
     BadFormat,
+    /// Job was buried (typically due to server out of memory)
     Buried,
+    /// Deadline for job completion is approaching
     Deadline,
+    /// Server is in drain mode and not accepting new jobs
     Draining,
+    /// Server encountered an internal error
     Internal,
+    /// Job body exceeds maximum allowed size
     JobTooBig,
+    /// Expected CRLF sequence was not found
     NoCRLF,
+    /// Requested job or tube does not exist
     NotFound,
+    /// Cannot ignore the only tube in watch list
     NotIgnored,
+    /// Server is out of memory
     OOM,
+    /// Operation timed out
     Timeout,
+    /// Unknown or unrecognized error
     Unknown,
+    /// Failed to communicate with the server
     CommunicationFailure,
 };
 
+/// Map of protocol error strings to ReturnedError enum values.
+/// Used to parse error responses from the beanstalkd server.
 const ReturnedErrorMap = std.StaticStringMap(ReturnedError).initComptime(.{
     .{ "BAD_FORMAT", ReturnedError.BadFormat },
     .{ "BURIED", ReturnedError.Buried },
@@ -35,6 +52,8 @@ const ReturnedErrorMap = std.StaticStringMap(ReturnedError).initComptime(.{
     .{ "CommunicationFailure", ReturnedError.CommunicationFailure },
 });
 
+/// Finds and returns the corresponding error from a server response text.
+/// Returns ReturnedError.Unknown if the error text is not recognized.
 pub fn findError(text: []u8) ReturnedError {
     if (ReturnedErrorMap.get(text)) |reterr| {
         return reterr;

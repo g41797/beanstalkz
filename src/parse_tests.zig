@@ -19,7 +19,7 @@ test "parse errors" {
 // KICKED <count>\r\n
 // OK <bytes>\r\n
 test "parseSize" {
-    var result = try parse.parseSize("RESERVED 101 234\r\n");
+    var result: struct { []const u8, usize } = try parse.parseSize("RESERVED 101 234\r\n");
     try testing.expectEqual(std.mem.eql(u8, "RESERVED 101", result[0]), true);
     try testing.expectEqual(234, result[1]);
 

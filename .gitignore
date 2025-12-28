@@ -6,3 +6,4 @@ zig-out/
 #/src/c/ubus
 #/src/c/include
 html/
+.claude/settings.local.json

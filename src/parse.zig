@@ -6,6 +6,11 @@ const ascii = std.ascii;
 const err = @import("err.zig");
 const ReturnedError = err.ReturnedError;
 
+/// Parses a beanstalkd protocol response line to extract the size parameter.
+/// The size is typically the last space-separated value in the response line.
+/// For example: "RESERVED 123 456" returns ("RESERVED 123", 456)
+/// Returns a tuple of (remaining_line, size_value).
+/// Returns ReturnedError.Unknown if the line is empty or malformed.
 pub fn parseSize(line: []const u8) !struct { []const u8, usize } {
     if (line.len == 0) {
         return ReturnedError.Unknown;
@@ -19,7 +24,7 @@ pub fn parseSize(line: []const u8) !struct { []const u8, usize } {
     }
 
     var size: usize = 0;
-    var lenOfsize = line.len - sizeIndex - 1;
+    var lenOfsize: usize = line.len - sizeIndex - 1;
 
     for (line[sizeIndex + 1 .. line.len], 0..) |char, indx| {
         if ((char == '\r') or (char == '\n')) {

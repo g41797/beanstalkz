@@ -30,13 +30,20 @@ const tubename = @import("name.zig");
 const Job = @import("job.zig").Job;
 pub const JobState = @import("job.zig").JobState;
 
+/// Default beanstalkd server address (localhost).
 pub const DefaultAddr = "127.0.0.1";
+/// Default beanstalkd server port.
 pub const DafaultPort = 11300;
+/// Default tube name used by beanstalkd.
 pub const DafaultTube = "default";
-pub const DefaultDelay = 0; // no delay
-pub const DefaultPriority = 1024; // most urgent: 0, least urgent: 4294967295
-pub const DefaultTTR = 60; // 1 minute
+/// Default delay for new jobs in seconds (0 = no delay).
+pub const DefaultDelay = 0;
+/// Default job priority (most urgent: 0, least urgent: 4294967295).
+pub const DefaultPriority = 1024;
+/// Default time-to-run for jobs in seconds (1 minute).
+pub const DefaultTTR = 60;
 
+/// Maximum length for protocol response lines in bytes.
 pub const MaxReadLineLen = 256;
 
 pub const Client = struct {
@@ -286,7 +293,7 @@ pub const Client = struct {
             return err.findError(cl.readLine[0..linelen]);
         }
 
-        var ret = try parse.parseSize(cl.readLine[0..linelen]);
+        var ret: struct { []const u8, usize } = try parse.parseSize(cl.readLine[0..linelen]);
 
         const jsize: usize = ret[1];
 
@@ -530,10 +537,10 @@ pub const Client = struct {
     }
 
     fn connectTcp(client: *Client, host: []const u8, port: u16) !*Connection {
-        const conn = try client.allocator.create(Connection);
+        const conn: *Connection = try client.allocator.create(Connection);
         errdefer client.allocator.destroy(conn);
 
-        const stream = try net.tcpConnectToHost(client.allocator, host, port);
+        const stream: net.Stream = try net.tcpConnectToHost(client.allocator, host, port);
         errdefer stream.close();
 
         conn.* = .{

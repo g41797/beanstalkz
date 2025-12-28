@@ -29,7 +29,7 @@ test "put-state-reserve-delete" {
     const job_body = "job body";
     const jid = try cl.put(1, 0, 120, job_body);
 
-    var job_state = cl.state(jid);
+    var job_state: client.JobState = cl.state(jid);
     try testing.expectEqual(job_state, client.JobState.ready);
 
     var job: Job = .{};
@@ -82,7 +82,7 @@ test "all-staff" {
 
     const job_body = "job body";
     const jid = try cl.put(1, 360, 120, job_body);
-    var job_state = cl.state(jid);
+    var job_state: client.JobState = cl.state(jid);
     try testing.expectEqual(job_state, client.JobState.delayed);
 
     try cl.kick_job(jid);
