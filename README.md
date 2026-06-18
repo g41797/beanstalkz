@@ -4,7 +4,7 @@
 [![CI](https://github.com/g41797/beanstalkz/actions/workflows/ci.yml/badge.svg)](https://github.com/g41797/beanstalkz/actions/workflows/ci.yml)
 
 
-[Beanstalkd](https://github.com/beanstalkd/beanstalkd) is
+**Beanstalkd** is
 >             Simple and fast general purpose work queue.
 >         The beauty of Beanstalkd is its absolute simplicity.
 
@@ -42,6 +42,8 @@ If you don't have experience using `Beanstalkd`, it's a good idea to read:
 - [beanstalkd FAQ](https://pmatseykanets.github.io/beanstalkd-docs/resources/faq.html)
 - [Giant Killing with Beanstalkd](https://www.sitepoint.com/giant-killing-with-beanstalkd/)
 - [beanstalkd protocol](https://raw.githubusercontent.com/beanstalkd/beanstalkd/master/doc/protocol.txt)
+
+or visit [Beanstalkd repository](https://github.com/beanstalkd/beanstalkd)
 
 ## Job
 
