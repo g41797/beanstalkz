@@ -10,25 +10,23 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu]
+        optimize: [Debug, ReleaseSafe, ReleaseFast, ReleaseSmall]
 
     steps:
       - if: matrix.os == 'windows'
         run: git config --global core.autocrlf false
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
-          submodules: true
+          submodules: recursive
 
       - run: docker/start.sh
 
       - uses: mlugg/setup-zig@v2
         with:
-          version: 0.15.2
-          use-cache: false
-
-      - run: rm -rf ./.zig-cache/
+          version: 0.16.0
 
       - run: zig version
 
-      - run: zig build test -freference-trace --summary all
+      - run: zig build test -freference-trace --summary all -Doptimize=${{ matrix.optimize }}
 

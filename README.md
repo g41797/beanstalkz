@@ -4,16 +4,16 @@
 [![CI](https://github.com/g41797/beanstalkz/actions/workflows/ci.yml/badge.svg)](https://github.com/g41797/beanstalkz/actions/workflows/ci.yml)
 
 
-[Beanstalkd](https://pmatseykanets.github.io/beanstalkd-docs/) is
+[Beanstalkd](https://github.com/beanstalkd/beanstalkd) is
 >             Simple and fast general purpose work queue.
 >         The beauty of Beanstalkd is its absolute simplicity.
 
 
 Actually you can use just 3 commands
 
-- submit(put) job into the queue
-- take(reserve) job from the queue for processing
-- delete job from the queue
+- submit(**put**) job into the queue
+- take(**reserve**) job from the queue for processing
+- **delete** job from the queue
 
 ```zig
     // On producer side
@@ -33,13 +33,15 @@ Actually you can use just 3 commands
     // job.id().?   - contains job id
     try worker.delete(job.id().?);
 ```
-Beanstalkd is the part of main distros, you can install it using [appropriate package manager](https://pmatseykanets.github.io/beanstalkd-docs/guide/installation.html).
+Beanstalkd is the part of main distros - [see instructions](https://beanstalkd.github.io/download.html).
 
 And of course you can use Beanstalkd [with Docker](https://hub.docker.com/search?q=beanstalkd).  
 
 If you don't have experience using `Beanstalkd`, it's a good idea to read:
-- [beanstalkd protocol](https://pmatseykanets.github.io/beanstalkd-docs/protocol/)
+
 - [beanstalkd FAQ](https://pmatseykanets.github.io/beanstalkd-docs/resources/faq.html)
+- [Giant Killing with Beanstalkd](https://www.sitepoint.com/giant-killing-with-beanstalkd/)
+- [beanstalkd protocol](https://raw.githubusercontent.com/beanstalkd/beanstalkd/master/doc/protocol.txt)
 
 ## Job
 
@@ -94,19 +96,19 @@ Every tube has 3 sub-queues:
 
 ## Supported commands
 
-| Name                                                                                     |                 Description                  |                                                                API                                                                |
-|:-----------------------------------------------------------------------------------------|:--------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
-| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)        |           Set current tube(queue)            |                   [use(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L116)                    |
-| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)        |          Submit job to current tube          |    [put(pri: u32, delay: u32, ttr: u32, job: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L139)     |
-| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)      |   Subscribe to jobs submitted to the tube    |                  [watch(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L243)                   |
-| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)    |                 Consume job                  |              [reserve(timeout: u32, job: *Job)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L272)               |
-| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)       |    Put job to the failed("buried") state     |                   [bury(id: u32, pri: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L308)                   |
-| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed or failed job to the ready state |                      [kick_job(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L342)                      |
-| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)     |                 Un-subscribe                 |                  [ignore(tname: []const u8)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L383)                  |
-| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)     |          Remove job from the system          |                       [delete(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L369)                       |
-| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)      |                Get job state                 |                       [state(id: u32)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L198)                        |
-| connect                                                                                  |                   Connect                    | [connect(allocator: Allocator, addr: ?[]const u8, port: ?u16)](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L48) |
-| [disconnect](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L728) |                  Disconnect                  |                         [disconnect()](https://github.com/g41797/beanstalkz/blob/main/src/client.zig#L84)                         |
+| Name                                                                                     |                 Description                  |                                                                  API                                                                  |
+|:-----------------------------------------------------------------------------------------|:--------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------:|
+| [use](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L178)        |           Set current tube(queue)            |                      [use(tname: []const u8)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.use)                      |
+| [put](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L124)        |          Submit job to current tube          |       [put(pri: u32, delay: u32, ttr: u32, job: []const u8)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.put)       |
+| [watch](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L347)      |   Subscribe to jobs submitted to the tube    |                    [watch(tname: []const u8)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.watch)                    |
+| [reserve](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L203)    |                 Consume job                  |               [reserve(timeout: u32, job: *Job)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.reserve)               |
+| [bury](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L310)       |    Put job to the failed("buried") state     |                     [bury(id: u32, pri: u32)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.bury)                     |
+| [kick-job](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L424)   | Put delayed or failed job to the ready state |                      [kick_job(id: u32)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.kick_job)                      |
+| [ignore](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L363)     |                 Un-subscribe                 |                   [ignore(tname: []const u8)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.ignore)                   |
+| [delete](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L271)     |          Remove job from the system          |                        [delete(id: u32)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.delete)                        |
+| [state](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L465)      |                Get job state                 |                         [state(id: u32)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.state)                         |
+| connect                                                                                  |                   Connect                    | [connect(allocator: Allocator, addr: ?[]const u8, port: ?u16)](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.connect) |
+| [disconnect](https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L728) |                  Disconnect                  |                       [disconnect()](https://g41797.github.io/beanstalkz/#beanstalkz.client.Client.disconnect)                        |
   
  
 
@@ -118,18 +120,18 @@ Add *beanstalkz* to build.zig.zon:
 zig fetch --save=beanstalkz git+https://github.com/g41797/beanstalkz
 ```
 
-Add *beanstalkz* to build.zig:
-```zig
+Add dependency to build.zig: 
+
+```zig 
     const beanstalkz = b.dependency("beanstalkz", .{
         .target = target,
         .optimize = optimize,
     });
+```
 
-    const lib = b.addStaticLibrary(..);
-    lib.root_module.addImport("beanstalkz", beanstalkz.module("beanstalkz"));
-
-    const lib_unit_tests = b.addTest(...);
-    lib_unit_tests.root_module.addImport("beanstalkz", beanstalkz.module("beanstalkz"));
+For any xyz_mod module that uses _beanstalkz_, add the following code:
+```zig
+    xyz_mod.addImport("beanstalkz", beanstalkz.module("beanstalkz"));
 ```
 
 Import *beanstalkz*:
@@ -138,12 +140,6 @@ const beanstalkz = @import("beanstalkz");
 ```
 
 
-## Credits
-Content of README is heavily inspired by 
-- [README of jackd](https://github.com/getjackd/jackd#jackd)
-- [Giant Killing with Beanstalkd](https://www.sitepoint.com/giant-killing-with-beanstalkd/)
- 
 ## License
 [MIT](LICENSE)
 
-<br />

@@ -30,7 +30,7 @@ pub const ReturnedError = error{
     Timeout,
     /// Unknown or unrecognized error
     Unknown,
-    /// Failed to communicate with the server
+    /// Failed to communicate with the server or connection was not esablished
     CommunicationFailure,
 };
 

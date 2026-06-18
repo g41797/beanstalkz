@@ -122,7 +122,10 @@ Submodules
     git submodule add https://github.com/bergundy/evbsc src/submodules/evbsc
     git submodule add https://github.com/bergundy/libbeanstalkclient src/submodules/libbeanstalkclient
 
-    git rm src/submodules/TBD
+    Example of remove
+        git submodule deinit -f -- src/submodules/libbeanstalkclient
+        git rm -f src/submodules/libbeanstalkclient
+        rm -rf .git/modules/src/submodules/libbeanstalkclient
 
 Zig & JSON
     https://www.openmymind.net/Reading-A-Json-Config-In-Zig/
@@ -313,4 +316,7 @@ Run python as web server
     python3 -m http.server
     By default, the server runs on port 8000.
     Access the server by opening a web browser and navigating to http://localhost:8000
+
+`std.Io.net.Stream` for constant socket connections and `std.Io.Reader`
+    https://discord.com/channels/605571803288698900/1516052579560325160
 
